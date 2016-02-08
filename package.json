@@ -28,7 +28,8 @@
   },
   "dependencies": {
     "flora-errors": "^0.2.0",
-    "flora-ql": "^2.4.0"
+    "flora-ql": "^2.4.0",
+    "pegjs": "^0.9.0"
   },
   "devDependencies": {
     "chai": "^3.3.0",
