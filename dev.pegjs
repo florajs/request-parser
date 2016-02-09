@@ -1,12 +1,45 @@
+{
+  function excludeSelect(key) {
+    return (key !== 'select');
+  }
+
+  function mergeSelect(obj1, obj2) {
+    for (var i in obj2) {
+      if (!obj1[i]) {
+        obj1[i] = obj2[i];
+        continue;
+      }
+
+      // allow "a(b=c),a.d", but not "a(b=c),a(e=f)"
+      if (Object.keys(obj1[i]).filter(excludeSelect).length +
+        Object.keys(obj2[i]).filter(excludeSelect).length > 1) {
+        throw new Error('Cannot merge options of "' + i + '"');
+      }
+
+      for (var key in obj2[i]) {
+        if (key === 'select') {
+          // merge subselects
+          if (obj2[i].select) {
+            if (!obj1[i].select) obj1[i].select = obj2[i].select;
+          } else {
+            mergeSelect(obj1[i].select, obj2[i].select);
+          }
+        } else {
+          // add options
+          obj1[i][key] = obj2[i][key];
+        }
+      }
+    }
+    return obj1;
+  }
+}
+
 // Select
 select
   = head:attribute tail:(COMMA attribute)* {
       var obj = head;
       for (var i = 0; i < tail.length; i++) {
-        var obj2 = tail[i][1]; // tail[i][0] is the COMMA
-        for (var o in obj2) {
-          obj[o] = obj2[o];
-        }
+        obj = mergeSelect(obj, tail[i][1]);
       }
       return obj;
     }
@@ -14,7 +47,7 @@ select
 // Attributes
 attribute
   = combined_attribute
-  / single_attribute
+  / attr:single_attribute
 
 combined_attribute
   = head:single_attribute '.' tail:attribute {
@@ -45,9 +78,6 @@ options
 option
   = LPAREN key:option_key '=' val:option_value RPAREN {
     return [key, val];
-    var obj = {};
-    obj[key] = val;
-    return obj;
   }
 
 option_key = ident
