@@ -5,6 +5,7 @@
 
   function mergeSelect(obj1, obj2) {
     for (var i in obj2) {
+      // direct merge if obj2 is not selected in obj1
       if (!obj1[i]) {
         obj1[i] = obj2[i];
         continue;
@@ -16,6 +17,7 @@
         throw new Error('Cannot merge options of "' + i + '"');
       }
 
+      // merge properties
       for (var key in obj2[i]) {
         if (key === 'select') {
           // merge subselects
@@ -36,7 +38,7 @@
 
 // Select
 select
-  = head:attribute tail:(COMMA attribute)* {
+  = head:attribute tail:(',' attribute)* {
       var obj = head;
       for (var i = 0; i < tail.length; i++) {
         obj = mergeSelect(obj, tail[i][1]);
@@ -51,34 +53,45 @@ attribute
 
 combined_attribute
   = head:single_attribute '.' tail:attribute {
-    var obj = head;
-    for (var o in obj) {
-      obj[o].select = tail;
+      var obj = head;
+      for (var o in obj) {
+        if (obj[o].select) {
+          // single_attribute was "a[b,c]" => append to all
+          for (var sub in obj[o].select) {
+            obj[o].select[sub].select = tail;
+          }
+        } else {
+          obj[o].select = tail;
+        }
+      }
+      return obj;
     }
-    return obj;
-  }
 
 single_attribute
-  = name:ident options:options {
-    var obj = {};
-    obj[name] = options;
-    return obj;
-  }
+  = name:ident options:options sub:sub_select? {
+      var obj = {};
+      obj[name] = options;
+      if (sub) obj[name].select = sub;
+      return obj;
+    }
+
+sub_select
+  = '[' sub:select ']' { return sub; }
 
 // Attribute options
 options
   = options:option* {
-    var obj = {};
-    for (var i = 0; i < options.length; i++) {
-      obj[options[i][0]] = options[i][1];
+      var obj = {};
+      for (var i = 0; i < options.length; i++) {
+        obj[options[i][0]] = options[i][1];
+      }
+      return obj;
     }
-    return obj;
-  }
 
 option
-  = LPAREN key:option_key '=' val:option_value RPAREN {
-    return [key, val];
-  }
+  = '(' key:option_key '=' val:option_value ')' {
+      return [key, val];
+    }
 
 option_key = ident
 
@@ -89,10 +102,6 @@ option_value
 option_value_part
   = str:quoted_string { return '"' + str + '"' }
   / chars:[^()"]+ { return chars.join('') }
-
-COMMA = ','
-LPAREN = '('
-RPAREN = ')'
 
 ident
   = chars:[A-Za-z0-9_]+ { return chars.join('') }
