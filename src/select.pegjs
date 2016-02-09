@@ -1,5 +1,13 @@
 {
-  var aggregateParser = require('./aggregate');
+  var parsers = {
+    'id': require('./id'),
+    'aggregate': require('./aggregate'),
+    'filter': require('./filter'),
+    'limit': require('./limit'),
+    'order': require('./order'),
+    'page': require('./page'),
+    'search': require('./search')
+  };
 
   function excludeSelect(key) {
     return (key !== 'select');
@@ -91,25 +99,34 @@ options
 
 option
   = '(' key:option_key '=' val:option_value ')' {
+      if (parsers.hasOwnProperty(key)) return [key, parsers[key](val)];
       return [key, val];
     }
 
-option_key = ident
+option_key
+  = 'id'
+  / 'aggregate'
+  / 'filter'
+  / 'limit'
+  / 'order'
+  / 'page'
+  / 'search'
+  / ident // pass through unknown options
 
 option_value
   = quoted_string
-  / parts:option_value_part+ { return parts.join('') }
+  / parts:option_value_part+ { return parts.join(''); }
 
 option_value_part
-  = str:quoted_string { return '"' + str + '"' }
-  / chars:[^()"]+ { return chars.join('') }
+  = str:quoted_string { return '"' + str + '"'; }
+  / chars:[^()"]+ { return chars.join(''); }
 
 ident
-  = chars:[A-Za-z0-9_]+ { return chars.join('') }
+  = chars:[A-Za-z0-9_*]+ { return chars.join(''); }
 
 // String handling
 quoted_string
-  = '"' (ca:single_char*) '"' { return ca.join('') }
+  = '"' (ca:single_char*) '"' { return ca.join(''); }
 
 single_char
   = escaped_quotes
