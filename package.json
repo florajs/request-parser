@@ -33,6 +33,8 @@
     "pegjs": "^0.9.0"
   },
   "devDependencies": {
+    "beautify-benchmark": "^1.3.22",
+    "benchmark": "^2.1.0",
     "chai": "^3.3.0",
     "chai-as-promised": "^5.1.0",
     "eslint": "^1.5.1",
