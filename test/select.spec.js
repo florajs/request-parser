@@ -51,10 +51,10 @@ describe('select-parser', function () {
             expect((function () { selectParser('foo(a=1)'); })).not.to.throw(Error);
         });
 
-        xit('accepts array parameters', function () {
-            expect((function () { selectParser('foo(filter=id=1,2)'); })).to.eql({
+        it('accepts array parameters in filter', function () {
+            expect(selectParser('foo(filter=id=1,2)')).to.eql({
                 foo: {
-                    filter: [{attribute: ['id'], operator: 'equal', value: [1, 2]}]
+                    filter: [[{attribute: ['id'], operator: 'equal', value: [1, 2]}]]
                 }
             });
         });
