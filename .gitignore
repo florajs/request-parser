@@ -3,5 +3,5 @@
 build/
 node_modules/
 npm-debug.log
-./select-parser.js
+select-parser.js
 mocha.json
