@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function(grunt) {
+module.exports = function (grunt) {
 
     grunt.initConfig({
         mochaTest: {
@@ -30,6 +30,22 @@ module.exports = function(grunt) {
             }
         },
 
+        exec: {
+            createParser: {
+                cmd: './node_modules/.bin/pegjs ./src/select-parser.pegjs select-parser.js'
+            }
+        },
+
+        newer: { // only re-create parser if grammar file has changed
+            grammarFile: {
+                src: 'src/select-parser.pegjs',
+                dest: 'select-parser.js',
+                options: {
+                    tasks: ['exec:createParser']
+                }
+            }
+        },
+
         eslint: {
             target: ['lib/**/*.js']
         },
@@ -37,15 +53,6 @@ module.exports = function(grunt) {
         clean: {
             build: {
                 src: ['build/']
-            }
-        },
-
-        jsdoc: {
-            dist: {
-                src: ['lib/**/*.js'],
-                options: {
-                    destination: 'build/docs'
-                }
             }
         }
     });
@@ -55,8 +62,9 @@ module.exports = function(grunt) {
     grunt.registerTask('default', ['lint', 'test']);
     grunt.registerTask('doc', ['jsdoc']);
     grunt.registerTask('lint', 'eslint');
-    grunt.registerTask('test', 'mochaTest:test');
-    grunt.registerTask('test-bamboo', 'mochaTest:bamboo');
-    grunt.registerTask('test-cov', ['mocha_istanbul:coverage']);
+    grunt.registerTask('test', ['create-parser', 'mochaTest:test']);
+    grunt.registerTask('test-bamboo', ['create-parser', 'mochaTest:bamboo']);
+    grunt.registerTask('test-cov', ['create-parser', 'mocha_istanbul:coverage']);
+    grunt.registerTask('create-parser', 'newer');
 
 };

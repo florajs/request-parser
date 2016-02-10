@@ -59,6 +59,19 @@ describe('select-parser', function () {
             });
         });
 
+        it('merges options: "a(b=c),a.b"', function () {
+            expect(selectParser('a(b=c),a.b')).to.eql({a: {b: "c", select: {b: {}}}});
+            expect(selectParser('a(b=c)(d=e),a.b')).to.eql({a: {b: "c", d: "e", select: {b: {}}}});
+        });
+
+        it('throws an error if trying to merge options: "a(b=c),a(e=f)"', function () {
+            expect((function () { selectParser('a(b=c),a(e=f)'); })).to.throw(Error);
+        });
+
+        it('throws an error if options are redefined', function () {
+            expect((function () { selectParser('a(b=c)(b=d)'); })).to.throw(Error);
+        })
+
         it('does not accept invalid operators', function () {
             expect((function () { selectParser('foo(limit>3)'); })).to.throw(Error);
         });
@@ -123,6 +136,38 @@ describe('select-parser', function () {
             expect(selectParser('a[b,c[d]]')).to.eql({a: {select: {b: {}, c: {select: {d: {}}}}}});
             expect(selectParser('a[b,c[d,e]]')).to.eql({a: {select: {b: {}, c: {select: {d: {}, e: {}}}}}});
         });
+
+        it('parses recursive children "a[b,c][d,e]"', function () {
+            expect(selectParser('a[b,c][d,e]')).to.eql({a: {select: {
+                b: {select: {d: {}, e: {}}},
+                c: {select: {d: {}, e: {}}}
+            }}});
+        });
+
+        it('parses recursive children "a[b,c.x][d,e]"', function () {
+            expect(selectParser('a[b,c.x][d,e]')).to.eql({
+                a: {
+                    select: {
+                        b: {
+                            select: {
+                                d: {},
+                                e: {}
+                            }
+                        },
+                        c: {
+                            select: {
+                                x: {
+                                    select: {
+                                        d: {},
+                                        e: {}
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
     });
 
     describe('attributes with children (brackets) with parameters', function () {
@@ -143,11 +188,11 @@ describe('select-parser', function () {
         });
 
         it('parses a complex example', function () {
-            expect(selectParser('a(limit=1)[b(limit=2)(limit=3),x[y(limit=4)],zz],z')).to.eql({
+            expect(selectParser('a(limit=1)[b(limit=2),x[y(limit=4)],zz],z')).to.eql({
                 a: {
                     limit: 1,
                     select: {
-                        b: {limit: 3},
+                        b: {limit: 2},
                         x: {
                             select: {y: {limit: 4}}
                         },
@@ -164,8 +209,9 @@ describe('select-parser', function () {
             expect(selectParser('a.b')).to.eql({a: {select: {b: {}}}});
         });
 
-        it('parses "a.*"', function () {
-            expect(selectParser('a.*')).to.eql({a: {select: {'*': {}}}});
+        it('fails on invalid identifier', function () {
+            expect(function () { selectParser('a.*'); }).to.throw(Error);
+            expect(function () { selectParser('a.&'); }).to.throw(Error);
         });
 
         it('parses children with parameters', function () {

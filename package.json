@@ -4,6 +4,7 @@
   "description": "Request parser for Flora",
   "main": "index.js",
   "scripts": {
+    "install": "./node_modules/.bin/pegjs ./src/select-parser.pegjs select-parser.js",
     "test": "grunt test"
   },
   "author": {
@@ -28,7 +29,8 @@
   },
   "dependencies": {
     "flora-errors": "^0.2.0",
-    "flora-ql": "^2.4.0"
+    "flora-ql": "^2.4.0",
+    "pegjs": "^0.9.0"
   },
   "devDependencies": {
     "chai": "^3.3.0",
@@ -38,9 +40,11 @@
     "grunt-cli": "^0.1.13",
     "grunt-contrib-clean": "^0.7.0",
     "grunt-eslint": "^17.2.0",
+    "grunt-exec": "^0.4.6",
     "grunt-jsdoc": "^1.0.0",
     "grunt-mocha-istanbul": "^3.0.1",
     "grunt-mocha-test": "^0.12.7",
+    "grunt-newer-explicit": "^0.9.4",
     "istanbul": "^0.4.0",
     "jsdoc": "^3.3.0-beta2",
     "load-grunt-tasks": "^3.1.0",
