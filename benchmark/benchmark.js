@@ -3,7 +3,7 @@
 var benchmark = require('benchmark');
 var benchmarks = require('beautify-benchmark');
 
-var parserOld = require('../lib/select-old');
+var parserOld = require('./lib/select-old');
 var parserPeg = require('../lib/select');
 
 var query = 'title,instruments(filter=assetClass.id=1)(order=name:asc)(limit=3)(page=1).quotations(filter=id=4)[quote[value,changePerc]]';

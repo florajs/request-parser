@@ -5,7 +5,7 @@ var config = require('flora-ql/config');
 var tokenizer = require('flora-ql/tokenizer');
 var clearSquare = require('flora-ql/clearSquare');
 
-var requestParser = require('../index');
+var requestParser = require('../../index');
 
 var cfg = config({
     or: ',',
