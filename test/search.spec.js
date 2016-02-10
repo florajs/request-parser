@@ -2,7 +2,7 @@
 
 var expect = require('chai').expect;
 
-var searchParser = require('../lib/search');
+var searchParser = require('../').search;
 
 describe('search-parser', function () {
     it('should be a function', function () {

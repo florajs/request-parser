@@ -2,7 +2,7 @@
 
 var expect = require('chai').expect;
 
-var limitParser = require('../lib/limit');
+var limitParser = require('../').limit;
 
 describe('limit parser', function () {
     it('should be a function', function () {

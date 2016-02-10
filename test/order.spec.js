@@ -2,7 +2,7 @@
 
 var expect = require('chai').expect;
 
-var orderParser = require('../lib/order');
+var orderParser = require('../').order;
 
 describe('order-parser', function () {
     it('should be a function', function () {

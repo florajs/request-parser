@@ -2,7 +2,7 @@
 
 var expect = require('chai').expect;
 
-var idParser = require('../lib/id');
+var idParser = require('../').id;
 
 describe('id parser', function () {
     it('should be a function', function () {

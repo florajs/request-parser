@@ -2,7 +2,7 @@
 
 var expect = require('chai').expect;
 
-var filterParser = require('../lib/filter');
+var filterParser = require('../').filter;
 
 describe('filter parser', function () {
     it('should be a function', function () {

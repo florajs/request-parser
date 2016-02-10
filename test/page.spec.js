@@ -2,7 +2,7 @@
 
 var expect = require('chai').expect;
 
-var pageParser = require('../lib/page');
+var pageParser = require('../').page;
 
 describe('page-parser', function () {
     it('should be a function', function () {

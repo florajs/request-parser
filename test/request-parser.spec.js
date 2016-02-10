@@ -2,7 +2,7 @@
 
 var expect = require('chai').expect;
 
-var requestParser = require('../index');
+var requestParser = require('../').parse;
 
 describe('request-parser', function () {
     it('should be a function', function () {

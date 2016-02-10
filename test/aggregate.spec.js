@@ -2,7 +2,7 @@
 
 var expect = require('chai').expect;
 
-var aggregateParser = require('../lib/aggregate');
+var aggregateParser = require('../').aggregate;
 
 describe('aggregate parser', function () {
     it('should be a function', function () {

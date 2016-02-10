@@ -2,7 +2,7 @@
 
 var expect = require('chai').expect;
 
-var selectParser = require('../lib/select');
+var selectParser = require('../').select;
 
 describe('select-parser', function () {
     it('should be a function', function () {
