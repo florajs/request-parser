@@ -89,7 +89,8 @@ combined_attribute
     }
 
 single_attribute
-  = name:ident options:options sub:sub_select? {
+  = sub:sub_select
+  / name:ident options:options sub:sub_select? {
       var obj = {};
       obj[name] = options;
       if (sub) obj[name].select = sub;

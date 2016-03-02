@@ -168,6 +168,14 @@ describe('select-parser', function () {
                 }
             });
         });
+
+        it('parses brackets at top level "[b,c].d"', function () {
+            expect(selectParser('[b,c].d')).to.eql({b: {select: {d: {}}}, c: {select: {d: {}}}});
+        });
+
+        it('parses brackets at top level (recursive) "[b,c][d,e]', function () {
+            expect(selectParser('[b,c][d,e]')).to.eql({b: {select: {d: {}, e: {}}}, c: {select: {d: {}, e: {}}}});
+        });
     });
 
     describe('attributes with children (brackets) with parameters', function () {
