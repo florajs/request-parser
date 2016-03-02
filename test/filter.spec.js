@@ -112,6 +112,16 @@ describe('filter parser', function () {
         });
     });
 
+    describe('invalid syntax', function () {
+        xit('fails on missing operators', function () {
+            expect(function () { filterParser('a=1 b=2'); }).to.throw(Error);
+        });
+
+        xit('fails on additional garbage', function () {
+            expect(function () { filterParser('a=1 asdfasdfsdfa'); }).to.throw(Error);
+        });
+    });
+
     describe('attribute paths', function () {
         it('allowes square brackets', function () {
             expect(filterParser('author.group[isPremium=true AND package.price>=10]')).to.eql([
