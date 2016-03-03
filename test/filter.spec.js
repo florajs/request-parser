@@ -113,11 +113,11 @@ describe('filter parser', function () {
     });
 
     describe('invalid syntax', function () {
-        xit('fails on missing operators', function () {
+        it('fails on missing operators', function () {
             expect(function () { filterParser('a=1 b=2'); }).to.throw(Error);
         });
 
-        xit('fails on additional garbage', function () {
+        it('fails on additional garbage', function () {
             expect(function () { filterParser('a=1 asdfasdfsdfa'); }).to.throw(Error);
         });
     });
