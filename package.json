@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "install": "./node_modules/.bin/pegjs ./src/select-parser.pegjs select-parser.js",
-    "test": "grunt test"
+    "test": "grunt test",
+    "lint": "eslint lib"
   },
   "author": {
     "name": "BörseGo AG",
@@ -24,17 +25,20 @@
     }
   ],
   "engines": {
-    "node": ">=0.10.0"
+    "node": ">=6"
   },
   "dependencies": {
     "flora-errors": "^0.6.0",
     "flora-ql": "^2.5.0",
+    "has": "^1.0.1",
     "pegjs": "^0.9.0"
   },
   "devDependencies": {
     "chai": "^3.3.0",
     "chai-as-promised": "^5.1.0",
-    "eslint": "^2.3.0",
+    "eslint": "^3.11.0",
+    "eslint-config-airbnb-base": "^10.0.1",
+    "eslint-plugin-import": "^2.2.0",
     "grunt": "^0.4.5",
     "grunt-benchmark": "^0.3.0",
     "grunt-cli": "^1.2.0",
