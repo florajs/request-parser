@@ -36,16 +36,6 @@ module.exports = function (grunt) {
             }
         },
 
-        newer: { // only re-create parser if grammar file has changed
-            grammarFile: {
-                src: 'src/select-parser.pegjs',
-                dest: 'select-parser.js',
-                options: {
-                    tasks: ['exec:createParser']
-                }
-            }
-        },
-
         benchmark: {
             all: {
                 src: ['benchmarks/*.js']
@@ -71,6 +61,6 @@ module.exports = function (grunt) {
     grunt.registerTask('test', ['create-parser', 'mochaTest:test']);
     grunt.registerTask('test-bamboo', ['create-parser', 'mochaTest:bamboo']);
     grunt.registerTask('test-cov', ['create-parser', 'mocha_istanbul:coverage']);
-    grunt.registerTask('create-parser', 'newer');
+    grunt.registerTask('create-parser', 'exec:createParser');
 
 };

@@ -48,7 +48,6 @@
     "grunt-jsdoc": "^2.0.0",
     "grunt-mocha-istanbul": "^4.0.2",
     "grunt-mocha-test": "^0.12.7",
-    "grunt-newer-explicit": "^0.9.4",
     "istanbul": "^0.4.0",
     "jsdoc": "^3.3.0-beta2",
     "load-grunt-tasks": "^3.1.0",
