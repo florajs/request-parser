@@ -14,10 +14,7 @@
   },
   "homepage": "https://github.com/godmodelabs/flora-request-parser",
   "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/godmodelabs/flora-request-parser.git"
-  },
+  "repository": "godmodelabs/flora-request-parser",
   "contributors": [
     {
       "name": "Nico Kaiser",
