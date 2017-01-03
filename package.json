@@ -25,7 +25,7 @@
     "node": ">=6"
   },
   "dependencies": {
-    "flora-errors": "^0.6.0",
+    "flora-errors": "^0.7.0",
     "flora-ql": "^2.5.0",
     "has": "^1.0.1",
     "pegjs": "^0.9.0"
