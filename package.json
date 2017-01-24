@@ -4,9 +4,9 @@
   "description": "Request parser for Flora",
   "main": "index.js",
   "scripts": {
-    "install": "./node_modules/.bin/pegjs ./src/select-parser.pegjs select-parser.js",
+    "install": "./node_modules/.bin/pegjs -o select-parser.js ./src/select-parser.pegjs",
     "test": "grunt test",
-    "lint": "eslint lib"
+    "lint": "eslint lib index.js"
   },
   "author": {
     "name": "BörseGo AG",
@@ -28,7 +28,7 @@
     "flora-errors": "^0.7.0",
     "flora-ql": "^2.5.0",
     "has": "^1.0.1",
-    "pegjs": "^0.9.0"
+    "pegjs": "^0.10.0"
   },
   "devDependencies": {
     "chai": "^3.3.0",

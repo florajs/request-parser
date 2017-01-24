@@ -1,7 +1,6 @@
 'use strict';
 
-module.exports = function (grunt) {
-
+module.exports = (grunt) => {
     grunt.initConfig({
         mochaTest: {
             test: {
@@ -20,7 +19,7 @@ module.exports = function (grunt) {
             }
         },
 
-        'mocha_istanbul': {
+        mocha_istanbul: {
             coverage: {
                 src: 'test',
                 options: {
@@ -32,7 +31,7 @@ module.exports = function (grunt) {
 
         exec: {
             createParser: {
-                cmd: './node_modules/.bin/pegjs ./src/select-parser.pegjs select-parser.js'
+                cmd: './node_modules/.bin/pegjs -o select-parser.js ./src/select-parser.pegjs'
             }
         },
 
@@ -62,5 +61,4 @@ module.exports = function (grunt) {
     grunt.registerTask('test-bamboo', ['create-parser', 'mochaTest:bamboo']);
     grunt.registerTask('test-cov', ['create-parser', 'mocha_istanbul:coverage']);
     grunt.registerTask('create-parser', 'exec:createParser');
-
 };
