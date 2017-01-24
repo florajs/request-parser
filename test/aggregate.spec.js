@@ -1,15 +1,15 @@
 'use strict';
 
-var expect = require('chai').expect;
+const { expect } = require('chai');
 
-var aggregateParser = require('../').aggregate;
+const aggregateParser = require('../').aggregate;
 
-describe('aggregate parser', function () {
-    it('should be a function', function () {
+describe('aggregate parser', () => {
+    it('should be a function', () => {
         expect(aggregateParser).to.be.a('function');
     });
 
-    it('should throw an error (not implemented)', function () {
-        expect((function () { aggregateParser({}); })).to.throw(Error);
+    it('should throw an error (not implemented)', () => {
+        expect((() => { aggregateParser({}); })).to.throw(Error);
     });
 });

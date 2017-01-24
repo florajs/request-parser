@@ -1,6 +1,5 @@
 build
 coverage
-examples
 node_modules
 test
 select-parser.js

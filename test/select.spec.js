@@ -1,150 +1,149 @@
 'use strict';
 
-var expect = require('chai').expect;
+const { expect } = require('chai');
 
-var selectParser = require('../').select;
+const selectParser = require('../').select;
 
-describe('select-parser', function () {
-    it('should be a function', function () {
+describe('select-parser', () => {
+    it('should be a function', () => {
         expect(selectParser).to.be.a('function');
     });
 
-    it('should throw an error for non-string arguments', function () {
-        expect((function () { selectParser(1); })).to.throw(Error);
-        expect((function () { selectParser({}); })).to.throw(Error);
-        expect((function () { selectParser([]); })).to.throw(Error);
+    it('should throw an error for non-string arguments', () => {
+        expect((() => { selectParser(1); })).to.throw(Error);
+        expect((() => { selectParser({}); })).to.throw(Error);
+        expect((() => { selectParser([]); })).to.throw(Error);
     });
 
-    it('does not accept empty strings', function () {
-        expect((function () { selectParser(''); })).to.throw(Error);
-        expect((function () { selectParser(','); })).to.throw(Error);
+    it('does not accept empty strings', () => {
+        expect((() => { selectParser(''); })).to.throw(Error);
+        expect((() => { selectParser(','); })).to.throw(Error);
     });
 
-    it('accepts single select parameters', function () {
-        expect((function () { selectParser('title'); })).not.to.throw(Error);
+    it('accepts single select parameters', () => {
+        expect((() => { selectParser('title'); })).not.to.throw(Error);
     });
 
-    it('accepts multiple select parameters', function () {
-        expect((function () { selectParser('title,instruments'); })).not.to.throw(Error);
+    it('accepts multiple select parameters', () => {
+        expect((() => { selectParser('title,instruments'); })).not.to.throw(Error);
     });
 
-    describe('attributes without parameters', function () {
-        it('returns the parts as object keys', function () {
-            expect(selectParser('foo')).to.eql({foo: {}});
-
+    describe('attributes without parameters', () => {
+        it('returns the parts as object keys', () => {
+            expect(selectParser('foo')).to.eql({ foo: {} });
         });
 
-        it('works for multiple parts', function () {
-            expect(selectParser('foo,bar')).to.eql({foo: {}, bar: {}});
+        it('works for multiple parts', () => {
+            expect(selectParser('foo,bar')).to.eql({ foo: {}, bar: {} });
         });
     });
 
-    describe('single attributes with parameters', function () {
-        it('parses single parameters', function () {
-            expect(selectParser('foo(limit=3)')).to.eql({foo: {limit: 3}});
+    describe('single attributes with parameters', () => {
+        it('parses single parameters', () => {
+            expect(selectParser('foo(limit=3)')).to.eql({ foo: { limit: 3 } });
             expect(selectParser('foo(order=name:asc)')).to.eql({
-                foo: {order: [{direction: "asc", attribute: ["name"]}]}
+                foo: { order: [{ direction: 'asc', attribute: ['name'] }] }
             });
         });
 
-        it('accepts and passes through unknown parameters', function () {
-            expect((function () { selectParser('foo(a=1)'); })).not.to.throw(Error);
+        it('accepts and passes through unknown parameters', () => {
+            expect((() => { selectParser('foo(a=1)'); })).not.to.throw(Error);
         });
 
-        it('accepts array parameters in filter', function () {
+        it('accepts array parameters in filter', () => {
             expect(selectParser('foo(filter=id=1,2)')).to.eql({
                 foo: {
-                    filter: [[{attribute: ['id'], operator: 'equal', value: [1, 2]}]]
+                    filter: [[{ attribute: ['id'], operator: 'equal', value: [1, 2] }]]
                 }
             });
         });
 
-        it('merges options: "a(b=c),a.b"', function () {
-            expect(selectParser('a(b=c),a.b')).to.eql({a: {b: "c", select: {b: {}}}});
-            expect(selectParser('a(b=c)(d=e),a.b')).to.eql({a: {b: "c", d: "e", select: {b: {}}}});
+        it('merges options: "a(b=c),a.b"', () => {
+            expect(selectParser('a(b=c),a.b')).to.eql({ a: { b: 'c', select: { b: {} } } });
+            expect(selectParser('a(b=c)(d=e),a.b')).to.eql({ a: { b: 'c', d: 'e', select: { b: {} } } });
         });
 
-        it('throws an error if trying to merge options: "a(b=c),a(e=f)"', function () {
-            expect((function () { selectParser('a(b=c),a(e=f)'); })).to.throw(Error);
+        it('throws an error if trying to merge options: "a(b=c),a(e=f)"', () => {
+            expect((() => { selectParser('a(b=c),a(e=f)'); })).to.throw(Error);
         });
 
-        it('throws an error if options are redefined', function () {
-            expect((function () { selectParser('a(b=c)(b=d)'); })).to.throw(Error);
-        })
-
-        it('does not accept invalid operators', function () {
-            expect((function () { selectParser('foo(limit>3)'); })).to.throw(Error);
+        it('throws an error if options are redefined', () => {
+            expect((() => { selectParser('a(b=c)(b=d)'); })).to.throw(Error);
         });
 
-        it('does not accept invalid parameters', function () {
-            expect((function () { selectParser('foo(limit=foo)'); })).to.throw(Error);
+        it('does not accept invalid operators', () => {
+            expect((() => { selectParser('foo(limit>3)'); })).to.throw(Error);
         });
 
-        it('parses multiple parameters', function () {
+        it('does not accept invalid parameters', () => {
+            expect((() => { selectParser('foo(limit=foo)'); })).to.throw(Error);
+        });
+
+        it('parses multiple parameters', () => {
             expect(selectParser('foo(limit=3)(order=name:asc)')).to.eql({
                 foo: {
-                    order: [{direction: "asc", attribute: ["name"]}],
+                    order: [{ direction: 'asc', attribute: ['name'] }],
                     limit: 3,
                 }
             });
         });
     });
 
-    describe('multiple attributes with parameters', function () {
-        it('parses single parameters', function () {
+    describe('multiple attributes with parameters', () => {
+        it('parses single parameters', () => {
             expect(selectParser('title,foo(limit=3)')).to.eql({
                 title: {},
-                foo: {limit: 3}
+                foo: { limit: 3 }
             });
             expect(selectParser('title(page=1),foo(limit=3)')).to.eql({
-                title: {page: 1},
-                foo: {limit: 3}
+                title: { page: 1 },
+                foo: { limit: 3 }
             });
         });
     });
 
-    describe('attributes with children (brackets)', function () {
-        it('fails on empty children "a[]"', function () {
-            expect(function () { selectParser('a[]'); }).to.throw(Error);
+    describe('attributes with children (brackets)', () => {
+        it('fails on empty children "a[]"', () => {
+            expect(() => { selectParser('a[]'); }).to.throw(Error);
         });
 
-        it('parses simple children "a[b]"', function () {
-            expect(selectParser('a[b]')).to.eql({a: {select: {b: {}}}});
+        it('parses simple children "a[b]"', () => {
+            expect(selectParser('a[b]')).to.eql({ a: { select: { b: {} } } });
         });
 
-        it('parses nested children "a[b[c]]"', function () {
-            expect(selectParser('a[b[c]]')).to.eql({a: {select: {b: {select: {c: {}}}}}});
+        it('parses nested children "a[b[c]]"', () => {
+            expect(selectParser('a[b[c]]')).to.eql({ a: { select: { b: { select: { c: {} } } } } });
         });
 
-        it('parses mixed attributes "a[b],c"', function () {
-            expect(selectParser('a[b],c')).to.eql({a: {select: {b: {}}}, c: {}});
+        it('parses mixed attributes "a[b],c"', () => {
+            expect(selectParser('a[b],c')).to.eql({ a: { select: { b: {} } }, c: {} });
         });
 
-        it('parses mixed attributes "a[b],c[d]"', function () {
-            expect(selectParser('a[b],c[d]')).to.eql({a: {select: {b: {}}}, c: {select: {d: {}}}});
+        it('parses mixed attributes "a[b],c[d]"', () => {
+            expect(selectParser('a[b],c[d]')).to.eql({ a: { select: { b: {} } }, c: { select: { d: {} } } });
         });
 
-        it('parses multiple children "a[b,c]', function () {
-            expect(selectParser('a[b,c]')).to.eql({a: {select: {b: {}, c: {}}}});
+        it('parses multiple children "a[b,c]', () => {
+            expect(selectParser('a[b,c]')).to.eql({ a: { select: { b: {}, c: {} } } });
         });
 
-        it('parses multiple children "a[b,c[d]]', function () {
-            expect(selectParser('a[b,c[d]]')).to.eql({a: {select: {b: {}, c: {select: {d: {}}}}}});
+        it('parses multiple children "a[b,c[d]]', () => {
+            expect(selectParser('a[b,c[d]]')).to.eql({ a: { select: { b: {}, c: { select: { d: {} } } } } });
         });
 
-        it('parses multiple children "a[b,c[d,e]]', function () {
-            expect(selectParser('a[b,c[d]]')).to.eql({a: {select: {b: {}, c: {select: {d: {}}}}}});
-            expect(selectParser('a[b,c[d,e]]')).to.eql({a: {select: {b: {}, c: {select: {d: {}, e: {}}}}}});
+        it('parses multiple children "a[b,c[d,e]]', () => {
+            expect(selectParser('a[b,c[d]]')).to.eql({ a: { select: { b: {}, c: { select: { d: {} } } } } });
+            expect(selectParser('a[b,c[d,e]]')).to.eql({ a: { select: { b: {}, c: { select: { d: {}, e: {} } } } } });
         });
 
-        it('parses recursive children "a[b,c][d,e]"', function () {
-            expect(selectParser('a[b,c][d,e]')).to.eql({a: {select: {
-                b: {select: {d: {}, e: {}}},
-                c: {select: {d: {}, e: {}}}
-            }}});
+        it('parses recursive children "a[b,c][d,e]"', () => {
+            expect(selectParser('a[b,c][d,e]')).to.eql({ a: { select: {
+                b: { select: { d: {}, e: {} } },
+                c: { select: { d: {}, e: {} } }
+            } } });
         });
 
-        it('parses recursive children "a[b,c.x][d,e]"', function () {
+        it('parses recursive children "a[b,c.x][d,e]"', () => {
             expect(selectParser('a[b,c.x][d,e]')).to.eql({
                 a: {
                     select: {
@@ -169,40 +168,40 @@ describe('select-parser', function () {
             });
         });
 
-        it('parses brackets at top level "[b,c].d"', function () {
-            expect(selectParser('[b,c].d')).to.eql({b: {select: {d: {}}}, c: {select: {d: {}}}});
+        it('parses brackets at top level "[b,c].d"', () => {
+            expect(selectParser('[b,c].d')).to.eql({ b: { select: { d: {} } }, c: { select: { d: {} } } });
         });
 
-        it('parses brackets at top level (recursive) "[b,c][d,e]', function () {
-            expect(selectParser('[b,c][d,e]')).to.eql({b: {select: {d: {}, e: {}}}, c: {select: {d: {}, e: {}}}});
+        it('parses brackets at top level (recursive) "[b,c][d,e]', () => {
+            expect(selectParser('[b,c][d,e]')).to.eql({ b: { select: { d: {}, e: {} } }, c: { select: { d: {}, e: {} } } });
         });
     });
 
-    describe('attributes with children (brackets) with parameters', function () {
-        it('fails on empty children "a(limit=3)[]"', function () {
-            expect(function () { selectParser('a(limit=3)[]'); }).to.throw(Error);
+    describe('attributes with children (brackets) with parameters', () => {
+        it('fails on empty children "a(limit=3)[]"', () => {
+            expect(() => { selectParser('a(limit=3)[]'); }).to.throw(Error);
         });
 
-        it('parses simple parameters on root level', function () {
-            expect(selectParser('a(limit=3)[b]')).to.eql({a: {limit: 3, select: {b: {}}}});
+        it('parses simple parameters on root level', () => {
+            expect(selectParser('a(limit=3)[b]')).to.eql({ a: { limit: 3, select: { b: {} } } });
         });
 
-        it('parses simple parameters on children level', function () {
-            expect(selectParser('a[b(limit=3)]')).to.eql({a: {select: {b: {limit: 3}}}});
+        it('parses simple parameters on children level', () => {
+            expect(selectParser('a[b(limit=3)]')).to.eql({ a: { select: { b: { limit: 3 } } } });
         });
 
-        it('parses simple parameters on all levels', function () {
-            expect(selectParser('a(limit=3)[b(limit=4)]')).to.eql({a: {limit: 3, select: {b: {limit: 4}}}});
+        it('parses simple parameters on all levels', () => {
+            expect(selectParser('a(limit=3)[b(limit=4)]')).to.eql({ a: { limit: 3, select: { b: { limit: 4 } } } });
         });
 
-        it('parses a complex example', function () {
+        it('parses a complex example', () => {
             expect(selectParser('a(limit=1)[b(limit=2),x[y(limit=4)],zz],z')).to.eql({
                 a: {
                     limit: 1,
                     select: {
-                        b: {limit: 2},
+                        b: { limit: 2 },
                         x: {
-                            select: {y: {limit: 4}}
+                            select: { y: { limit: 4 } }
                         },
                         zz: {}
                     }
@@ -212,40 +211,40 @@ describe('select-parser', function () {
         });
     });
 
-    describe('attributes with children (dot notation)', function () {
-        it('parses "a.b"', function () {
-            expect(selectParser('a.b')).to.eql({a: {select: {b: {}}}});
+    describe('attributes with children (dot notation)', () => {
+        it('parses "a.b"', () => {
+            expect(selectParser('a.b')).to.eql({ a: { select: { b: {} } } });
         });
 
-        it('fails on invalid identifier', function () {
-            expect(function () { selectParser('a.*'); }).to.throw(Error);
-            expect(function () { selectParser('a.&'); }).to.throw(Error);
+        it('fails on invalid identifier', () => {
+            expect(() => { selectParser('a.*'); }).to.throw(Error);
+            expect(() => { selectParser('a.&'); }).to.throw(Error);
         });
 
-        it('parses children with parameters', function () {
-            expect(selectParser('a(limit=3).b')).to.eql({a: {limit: 3, select: {b: {}}}});
-            expect(selectParser('a.b(limit=4)')).to.eql({a: {select: {b: {limit: 4}}}});
-            expect(selectParser('a(limit=3).b(limit=4)')).to.eql({a: {limit: 3, select: {b: {limit: 4}}}});
+        it('parses children with parameters', () => {
+            expect(selectParser('a(limit=3).b')).to.eql({ a: { limit: 3, select: { b: {} } } });
+            expect(selectParser('a.b(limit=4)')).to.eql({ a: { select: { b: { limit: 4 } } } });
+            expect(selectParser('a(limit=3).b(limit=4)')).to.eql({ a: { limit: 3, select: { b: { limit: 4 } } } });
         });
 
-        it('fails on duplicate dots', function () {
-            expect(function () { selectParser('a..b'); }).to.throw(Error);
+        it('fails on duplicate dots', () => {
+            expect(() => { selectParser('a..b'); }).to.throw(Error);
         });
     });
 
-    describe('attributes with children (dot and bracket notation)', function () {
-        it('parses "a.b,a[c]"', function () {
+    describe('attributes with children (dot and bracket notation)', () => {
+        it('parses "a.b,a[c]"', () => {
             expect(selectParser('a.b,a[b,c]')).to.eql({ a: { select: { b: {}, c: {} } } });
         });
 
-        it('parses "a(limit=3).b,a[c]"', function () {
+        it('parses "a(limit=3).b,a[c]"', () => {
             // FIXME:
             // das zweite "a" ohne Parameter gehört angemeckert,
             // weil eigentlich "limit=3" dafür nicht gilt!
             expect(selectParser('a(limit=3).b,a[c]')).to.eql({ a: { limit: 3, select: { b: {}, c: {} } } });
         });
 
-        it('parses "a.b,a(limit=3)[c]"', function () {
+        it('parses "a.b,a(limit=3)[c]"', () => {
             // FIXME:
             // das "limit=3" gehört angemeckert, weil a schon ohne Limit requested wurde?
             expect(selectParser('a.b,a(limit=3)[c]')).to.eql({ a: { limit: 3, select: { b: {}, c: {} } } });
@@ -254,23 +253,23 @@ describe('select-parser', function () {
         // ...
     });
 
-    describe('complex examples', function () {
-        it('parses "instruments[stock,index].countryId"', function () {
+    describe('complex examples', () => {
+        it('parses "instruments[stock,index].countryId"', () => {
             expect(selectParser('instruments[stock,index].countryId')).to.eql({
                 instruments: {
                     select: {
-                        stock: {select: {countryId: {}}},
-                        index: {select: {countryId: {}}}
+                        stock: { select: { countryId: {} } },
+                        index: { select: { countryId: {} } }
                     }
                 }
             });
         });
 
-        it('parses "title,instruments(order=name:asc)(limit=3)(page=1).quotations(limit=4).quote"', function () {
+        it('parses "title,instruments(order=name:asc)(limit=3)(page=1).quotations(limit=4).quote"', () => {
             expect(selectParser('title,instruments(order=name:asc)(limit=3)(page=1).quotations(limit=4).quote')).to.eql({
                 title: {},
                 instruments: {
-                    order: [{attribute: ['name'], direction: 'asc'}],
+                    order: [{ attribute: ['name'], direction: 'asc' }],
                     limit: 3,
                     page: 1,
                     select: {
@@ -285,11 +284,11 @@ describe('select-parser', function () {
             });
         });
 
-        it('parses "title,instruments(order=name:asc)(limit=3)(page=1).quotations(limit=4)[quote[value,changePerc]]"', function () {
+        it('parses "title,instruments(order=name:asc)(limit=3)(page=1).quotations(limit=4)[quote[value,changePerc]]"', () => {
             expect(selectParser('title,instruments(order=name:asc)(limit=3)(page=1).quotations(limit=4)[quote[value,changePerc]]')).to.eql({
                 title: {},
                 instruments: {
-                    order: [{attribute: ['name'], direction: 'asc'}],
+                    order: [{ attribute: ['name'], direction: 'asc' }],
                     limit: 3,
                     page: 1,
                     select: {

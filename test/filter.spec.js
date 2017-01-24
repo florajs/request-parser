@@ -1,254 +1,254 @@
 'use strict';
 
-var expect = require('chai').expect;
+const { expect } = require('chai');
 
-var filterParser = require('../').filter;
+const filterParser = require('../').filter;
 
-describe('filter parser', function () {
-    it('should be a function', function () {
+describe('filter parser', () => {
+    it('should be a function', () => {
         expect(filterParser).to.be.a('function');
     });
 
-    it('should throw an error for non-string arguments', function () {
-        expect((function () { filterParser(1); })).to.throw(Error);
-        expect((function () { filterParser({}); })).to.throw(Error);
-        expect((function () { filterParser([]); })).to.throw(Error);
+    it('should throw an error for non-string arguments', () => {
+        expect((() => { filterParser(1); })).to.throw(Error);
+        expect((() => { filterParser({}); })).to.throw(Error);
+        expect((() => { filterParser([]); })).to.throw(Error);
     });
 
-    it('does not accept empty strings', function () {
-        expect((function () { filterParser(''); })).to.throw(Error);
+    it('does not accept empty strings', () => {
+        expect((() => { filterParser(''); })).to.throw(Error);
     });
 
-    describe('filter by single attribute', function () {
-        it('accepts single filter parameters', function () {
-            expect((function () { filterParser('type.id=1'); })).not.to.throw(Error);
+    describe('filter by single attribute', () => {
+        it('accepts single filter parameters', () => {
+            expect((() => { filterParser('type.id=1'); })).not.to.throw(Error);
         });
 
-        it('parses single attributes', function () {
+        it('parses single attributes', () => {
             expect(filterParser('id=1')).to.eql([
-                [{attribute: ['id'], operator: 'equal', value: 1}]
+                [{ attribute: ['id'], operator: 'equal', value: 1 }]
             ]);
         });
 
-        it('parses single composite attributes (resolves attribute)', function () {
+        it('parses single composite attributes (resolves attribute)', () => {
             expect(filterParser('type.id=1')).to.eql([
-                [{attribute: ['type', 'id'], operator: 'equal', value: 1}]
+                [{ attribute: ['type', 'id'], operator: 'equal', value: 1 }]
             ]);
         });
     });
 
-    describe('multiple values', function () {
-        it('accepts multiple values with ","', function () {
-            expect((function () { filterParser('type.id=1,2,3'); })).not.to.throw(Error);
+    describe('multiple values', () => {
+        it('accepts multiple values with ","', () => {
+            expect((() => { filterParser('type.id=1,2,3'); })).not.to.throw(Error);
         });
 
-        it('parses into arrays', function () {
+        it('parses into arrays', () => {
             expect(filterParser('type.id=1,2,3')).to.eql([
-                [{attribute: ['type', 'id'], operator: 'equal', value: [1, 2, 3]}]
+                [{ attribute: ['type', 'id'], operator: 'equal', value: [1, 2, 3] }]
             ]);
         });
     });
 
-    describe('multiple attributes with "AND"', function () {
-        it('accepts AND syntax', function () {
-            expect((function () { filterParser('type.id=1 AND categories.id=2'); })).not.to.throw(Error);
+    describe('multiple attributes with "AND"', () => {
+        it('accepts AND syntax', () => {
+            expect((() => { filterParser('type.id=1 AND categories.id=2'); })).not.to.throw(Error);
         });
 
-        it('parses into top-level array', function () {
+        it('parses into top-level array', () => {
             expect(filterParser('type.id=1 AND categories.id=2')).to.eql([
                 [
-                    {attribute: ['type', 'id'], operator: 'equal', value: 1},
-                    {attribute: ['categories', 'id'], operator: 'equal', value: 2}
+                    { attribute: ['type', 'id'], operator: 'equal', value: 1 },
+                    { attribute: ['categories', 'id'], operator: 'equal', value: 2 }
                 ]
             ]);
         });
     });
 
-    describe('multiple attributes with "OR"', function () {
-        it('accepts OR syntax', function () {
-            expect((function () { filterParser('type.id=1 OR categories.id=2'); })).not.to.throw(Error);
+    describe('multiple attributes with "OR"', () => {
+        it('accepts OR syntax', () => {
+            expect((() => { filterParser('type.id=1 OR categories.id=2'); })).not.to.throw(Error);
         });
 
-        it('parses into second-level array', function () {
+        it('parses into second-level array', () => {
             expect(filterParser('type.id=1 OR categories.id=2')).to.eql([
-                [{attribute: ['type', 'id'], operator: 'equal', value: 1}],
-                [{attribute: ['categories', 'id'], operator: 'equal', value: 2}]
+                [{ attribute: ['type', 'id'], operator: 'equal', value: 1 }],
+                [{ attribute: ['categories', 'id'], operator: 'equal', value: 2 }]
             ]);
         });
 
-        it('parses into second-level array (multiple values)', function () {
+        it('parses into second-level array (multiple values)', () => {
             expect(filterParser('type.id=1,2,3 OR categories.id=2,65')).to.eql([
-                [{attribute: ['type', 'id'], operator: 'equal', value: [1, 2, 3]}],
-                [{attribute: ['categories', 'id'], operator: 'equal', value: [2, 65]}]
+                [{ attribute: ['type', 'id'], operator: 'equal', value: [1, 2, 3] }],
+                [{ attribute: ['categories', 'id'], operator: 'equal', value: [2, 65] }]
             ]);
         });
     });
 
-    describe('multiple attributes, AND and OR', function () {
-        it('resolves AND-precedence', function () {
+    describe('multiple attributes, AND and OR', () => {
+        it('resolves AND-precedence', () => {
             expect(filterParser('(type.id=1 OR countries.id=3) AND categories.id=2')).to.eql([
                 [
-                    {attribute: ['type', 'id'], operator: 'equal', value: 1},
-                    {attribute: ['categories', 'id'], operator: 'equal', value: 2}
+                    { attribute: ['type', 'id'], operator: 'equal', value: 1 },
+                    { attribute: ['categories', 'id'], operator: 'equal', value: 2 }
                 ],
                 [
-                    {attribute: ['countries', 'id'], operator: 'equal', value: 3},
-                    {attribute: ['categories', 'id'], operator: 'equal', value: 2}
+                    { attribute: ['countries', 'id'], operator: 'equal', value: 3 },
+                    { attribute: ['categories', 'id'], operator: 'equal', value: 2 }
                 ]
             ]);
         });
 
-        it('resolves AND-precedence (multiple values)', function () {
+        it('resolves AND-precedence (multiple values)', () => {
             expect(filterParser('(type.id=1,2,3 OR countries.id=3,23) AND categories.id=2,65')).to.eql([
                 [
-                    {attribute: ['type', 'id'], operator: 'equal', value: [1, 2, 3]},
-                    {attribute: ['categories', 'id'], operator: 'equal', value: [2, 65]}
+                    { attribute: ['type', 'id'], operator: 'equal', value: [1, 2, 3] },
+                    { attribute: ['categories', 'id'], operator: 'equal', value: [2, 65] }
                 ],
                 [
-                    {attribute: ['countries', 'id'], operator: 'equal', value: [3, 23]},
-                    {attribute: ['categories', 'id'], operator: 'equal', value: [2, 65]}
+                    { attribute: ['countries', 'id'], operator: 'equal', value: [3, 23] },
+                    { attribute: ['categories', 'id'], operator: 'equal', value: [2, 65] }
                 ]
             ]);
         });
     });
 
-    describe('invalid syntax', function () {
-        it('fails on missing operators', function () {
-            expect(function () { filterParser('a=1 b=2'); }).to.throw(Error);
+    describe('invalid syntax', () => {
+        it('fails on missing operators', () => {
+            expect(() => { filterParser('a=1 b=2'); }).to.throw(Error);
         });
 
-        it('fails on additional garbage', function () {
-            expect(function () { filterParser('a=1 asdfasdfsdfa'); }).to.throw(Error);
+        it('fails on additional garbage', () => {
+            expect(() => { filterParser('a=1 asdfasdfsdfa'); }).to.throw(Error);
         });
     });
 
-    describe('attribute paths', function () {
-        it('allowes square brackets', function () {
+    describe('attribute paths', () => {
+        it('allowes square brackets', () => {
             expect(filterParser('author.group[isPremium=true AND package.price>=10]')).to.eql([
                 [
-                    {attribute: ['author', 'group', 'isPremium'], operator: 'equal', value: true},
-                    {attribute: ['author', 'group', 'package', 'price'], operator: 'greaterOrEqual', value: 10}
+                    { attribute: ['author', 'group', 'isPremium'], operator: 'equal', value: true },
+                    { attribute: ['author', 'group', 'package', 'price'], operator: 'greaterOrEqual', value: 10 }
                 ]
             ]);
         });
 
-        it('converts short syntax (AND)', function () {
+        it('converts short syntax (AND)', () => {
             expect(filterParser('author.group[isPremium AND active]=true')).to.eql([
                 [
-                    {attribute: ['author', 'group', 'isPremium'], operator: 'equal', value: true},
-                    {attribute: ['author', 'group', 'active'], operator: 'equal', value: true}
+                    { attribute: ['author', 'group', 'isPremium'], operator: 'equal', value: true },
+                    { attribute: ['author', 'group', 'active'], operator: 'equal', value: true }
                 ]
             ]);
         });
 
-        it('converts short syntax (OR)', function () {
+        it('converts short syntax (OR)', () => {
             expect(filterParser('instrument[stock OR currency].active=true')).to.eql([
-                [{attribute: ['instrument', 'stock', 'active'], operator: 'equal', value: true}],
-                [{attribute: ['instrument', 'currency', 'active'], operator: 'equal', value: true}]
+                [{ attribute: ['instrument', 'stock', 'active'], operator: 'equal', value: true }],
+                [{ attribute: ['instrument', 'currency', 'active'], operator: 'equal', value: true }]
             ]);
         });
 
-        it('converts short syntax (OR and AND)', function () {
+        it('converts short syntax (OR and AND)', () => {
             expect(filterParser('instrument[stock OR currency][active AND isPublic]=true')).to.eql([
                 [
-                    {attribute: ['instrument', 'stock', 'active'], operator: 'equal', value: true},
-                    {attribute: ['instrument', 'stock', 'isPublic'], operator: 'equal', value: true}
+                    { attribute: ['instrument', 'stock', 'active'], operator: 'equal', value: true },
+                    { attribute: ['instrument', 'stock', 'isPublic'], operator: 'equal', value: true }
                 ],
                 [
-                    {attribute: ['instrument', 'currency', 'active'], operator: 'equal', value: true},
-                    {attribute: ['instrument', 'currency', 'isPublic'], operator: 'equal', value: true}
+                    { attribute: ['instrument', 'currency', 'active'], operator: 'equal', value: true },
+                    { attribute: ['instrument', 'currency', 'isPublic'], operator: 'equal', value: true }
                 ]
             ]);
         });
     });
 
-    describe('operators', function () {
-        it('equal', function () {
+    describe('operators', () => {
+        it('equal', () => {
             expect((filterParser('equal=1'))[0][0].operator).to.equal('equal');
         });
 
-        it('notEqual', function () {
+        it('notEqual', () => {
             expect((filterParser('equal!=1'))[0][0].operator).to.equal('notEqual');
         });
 
-        it('greater', function () {
+        it('greater', () => {
             expect((filterParser('equal>1'))[0][0].operator).to.equal('greater');
         });
 
-        it('greaterOrEqual', function () {
+        it('greaterOrEqual', () => {
             expect((filterParser('equal>=1'))[0][0].operator).to.equal('greaterOrEqual');
         });
 
-        it('less', function () {
+        it('less', () => {
             expect((filterParser('equal<1'))[0][0].operator).to.equal('less');
         });
 
-        it('lessOrEqual', function () {
+        it('lessOrEqual', () => {
             expect((filterParser('equal<=1'))[0][0].operator).to.equal('lessOrEqual');
         });
     });
 
-    describe('data types', function () {
-        it('int', function () {
+    describe('data types', () => {
+        it('int', () => {
             expect((filterParser('foo=0'))[0][0].value).to.be.a('number');
             expect((filterParser('foo=1'))[0][0].value).to.be.a('number');
         });
 
-        it('float', function () {
+        it('float', () => {
             expect((filterParser('foo=0.0'))[0][0].value).to.be.a('number');
             expect((filterParser('foo=3.1415'))[0][0].value).to.be.a('number');
         });
 
-        it('boolean', function () {
+        it('boolean', () => {
             expect((filterParser('foo=true'))[0][0].value).to.equal(true);
             expect((filterParser('foo=false'))[0][0].value).to.equal(false);
         });
 
-        it('string', function () {
+        it('string', () => {
             expect((filterParser('foo="bar"'))[0][0].value).to.be.a('string');
             expect((filterParser('foo="bar\\"baz"'))[0][0].value).to.be.a('string');
             expect((filterParser('foo=""'))[0][0].value).to.be.a('string');
         });
 
-        it('null', function () {
+        it('null', () => {
             expect((filterParser('foo=null'))[0][0].value).to.equal(null);
         });
 
-        it('null is case sensitive', function () {
-            expect((function () { filterParser('foo=Null'); })).to.throw(Error);
-            expect((function () { filterParser('foo=NULL'); })).to.throw(Error);
+        it('null is case sensitive', () => {
+            expect((() => { filterParser('foo=Null'); })).to.throw(Error);
+            expect((() => { filterParser('foo=NULL'); })).to.throw(Error);
         });
     });
 
-    describe('complex examples', function () {
-        it('parses "type.id=1 AND author.id=30 AND isPremium=false OR categories.id=20 OR title="DAX Tagesausblick""', function () {
+    describe('complex examples', () => {
+        it('parses "type.id=1 AND author.id=30 AND isPremium=false OR categories.id=20 OR title="DAX Tagesausblick""', () => {
             expect(filterParser('type.id=1 AND author.id=30 AND isPremium=false OR categories.id=20 OR title="DAX Tagesausblick"')).to.eql([
                 [
-                    {attribute: ['type', 'id'], operator: 'equal', value: 1},
-                    {attribute: ['author', 'id'], operator: 'equal', value: 30},
-                    {attribute: ['isPremium'], operator: 'equal', value: false},
+                    { attribute: ['type', 'id'], operator: 'equal', value: 1 },
+                    { attribute: ['author', 'id'], operator: 'equal', value: 30 },
+                    { attribute: ['isPremium'], operator: 'equal', value: false },
                 ],
                 [
-                    {attribute: ['categories', 'id'], operator: 'equal', value: 20}
+                    { attribute: ['categories', 'id'], operator: 'equal', value: 20 }
                 ],
                 [
-                    {attribute: ['title'], operator: 'equal', value: "DAX Tagesausblick"}
+                    { attribute: ['title'], operator: 'equal', value: 'DAX Tagesausblick' }
                 ]
             ]);
         });
 
-        it('parses "type.id=1 AND author.id=30 AND isPremium=false OR categories.id=20,65 OR title="DAX Tagesausblick""', function () {
+        it('parses "type.id=1 AND author.id=30 AND isPremium=false OR categories.id=20,65 OR title="DAX Tagesausblick""', () => {
             expect(filterParser('type.id=1 AND author.id=30 AND isPremium=false OR categories.id=20,65 OR title="DAX Tagesausblick"')).to.eql([
                 [
-                    {attribute: ['type', 'id'], operator: 'equal', value: 1},
-                    {attribute: ['author', 'id'], operator: 'equal', value: 30},
-                    {attribute: ['isPremium'], operator: 'equal', value: false},
+                    { attribute: ['type', 'id'], operator: 'equal', value: 1 },
+                    { attribute: ['author', 'id'], operator: 'equal', value: 30 },
+                    { attribute: ['isPremium'], operator: 'equal', value: false },
                 ],
                 [
-                    {attribute: ['categories', 'id'], operator: 'equal', value: [20, 65]}
+                    { attribute: ['categories', 'id'], operator: 'equal', value: [20, 65] }
                 ],
                 [
-                    {attribute: ['title'], operator: 'equal', value: "DAX Tagesausblick"}
+                    { attribute: ['title'], operator: 'equal', value: 'DAX Tagesausblick' }
                 ]
             ]);
         });

@@ -1,64 +1,64 @@
 'use strict';
 
-var expect = require('chai').expect;
+const { expect } = require('chai');
 
-var orderParser = require('../').order;
+const orderParser = require('../').order;
 
-describe('order-parser', function () {
-    it('should be a function', function () {
+describe('order-parser', () => {
+    it('should be a function', () => {
         expect(orderParser).to.be.a('function');
     });
 
-    it('should throw an error for non-string arguments', function () {
-        expect((function () { orderParser(1); })).to.throw(Error);
-        expect((function () { orderParser({}); })).to.throw(Error);
-        expect((function () { orderParser([]); })).to.throw(Error);
+    it('should throw an error for non-string arguments', () => {
+        expect((() => { orderParser(1); })).to.throw(Error);
+        expect((() => { orderParser({}); })).to.throw(Error);
+        expect((() => { orderParser([]); })).to.throw(Error);
     });
 
-    it('does not accept empty strings', function () {
-        expect((function () { orderParser(''); })).to.throw(Error);
-        expect((function () { orderParser(','); })).to.throw(Error);
+    it('does not accept empty strings', () => {
+        expect((() => { orderParser(''); })).to.throw(Error);
+        expect((() => { orderParser(','); })).to.throw(Error);
     });
 
-    it('accepts single order parameters', function () {
-        expect((function () { orderParser('name:asc'); })).not.to.throw(Error);
+    it('accepts single order parameters', () => {
+        expect((() => { orderParser('name:asc'); })).not.to.throw(Error);
     });
 
-    it('accepts multiple order parameters', function () {
-        expect((function () { orderParser('name:asc,type:desc'); })).not.to.throw(Error);
+    it('accepts multiple order parameters', () => {
+        expect((() => { orderParser('name:asc,type:desc'); })).not.to.throw(Error);
     });
 
-    it('should throw an error for invalid order parameters', function () {
-        expect((function () { orderParser('foo'); })).to.throw(Error);
-        expect((function () { orderParser('name:asc,type'); })).to.throw(Error);
-        expect((function () { orderParser('name:asc:foo'); })).to.throw(Error);
+    it('should throw an error for invalid order parameters', () => {
+        expect((() => { orderParser('foo'); })).to.throw(Error);
+        expect((() => { orderParser('name:asc,type'); })).to.throw(Error);
+        expect((() => { orderParser('name:asc:foo'); })).to.throw(Error);
     });
 
-    it('should throw an error for invalid order directions', function () {
-        expect((function () { orderParser('name:as'); })).to.throw(Error);
-        expect((function () { orderParser('name:ASC'); })).to.throw(Error);
+    it('should throw an error for invalid order directions', () => {
+        expect((() => { orderParser('name:as'); })).to.throw(Error);
+        expect((() => { orderParser('name:ASC'); })).to.throw(Error);
     });
 
-    describe('"random" direction', function () {
-        it('should be the only order element', function () {
-            expect((function () { orderParser(':random'); })).not.to.throw(Error);
-            expect((function () { orderParser('name:asc,:random'); })).to.throw(Error);
+    describe('"random" direction', () => {
+        it('should be the only order element', () => {
+            expect((() => { orderParser(':random'); })).not.to.throw(Error);
+            expect((() => { orderParser('name:asc,:random'); })).to.throw(Error);
         });
 
-        it('should have no attribute', function () {
-            expect((function () { orderParser('name:random'); })).to.throw(Error);
+        it('should have no attribute', () => {
+            expect((() => { orderParser('name:random'); })).to.throw(Error);
         });
     });
 
-    describe('single order parameters', function () {
-        var o = orderParser('name:asc');
+    describe('single order parameters', () => {
+        const o = orderParser('name:asc');
 
-        it('should transform the argument into an array', function () {
+        it('should transform the argument into an array', () => {
             expect(o).to.be.an('array');
             expect(o).to.have.length(1);
         });
 
-        it('should return an array of objects', function () {
+        it('should return an array of objects', () => {
             expect(o[0]).to.be.an('object');
             expect(o[0]).to.have.ownProperty('attribute');
             expect(o[0]).to.have.ownProperty('direction');
@@ -68,15 +68,15 @@ describe('order-parser', function () {
         });
     });
 
-    describe('multiple order parameters', function () {
-        var o = orderParser('foo:asc,bar:desc');
+    describe('multiple order parameters', () => {
+        const o = orderParser('foo:asc,bar:desc');
 
-        it('should transform the argument into an array', function () {
+        it('should transform the argument into an array', () => {
             expect(o).to.be.an('array');
             expect(o).to.have.length(2);
         });
 
-        it('should return an array of objects', function () {
+        it('should return an array of objects', () => {
             expect(o[0]).to.be.an('object');
             expect(o[0]).to.have.ownProperty('attribute');
             expect(o[0]).to.have.ownProperty('direction');
@@ -93,15 +93,15 @@ describe('order-parser', function () {
         });
     });
 
-    describe('nested attibutes', function () {
-        var o = orderParser('instrument.id:asc');
+    describe('nested attibutes', () => {
+        const o = orderParser('instrument.id:asc');
 
-        it('should transform the argument into an array', function () {
+        it('should transform the argument into an array', () => {
             expect(o).to.be.an('array');
             expect(o).to.have.length(1);
         });
 
-        it('should return an array of objects', function () {
+        it('should return an array of objects', () => {
             expect(o[0]).to.be.an('object');
             expect(o[0]).to.have.ownProperty('attribute');
             expect(o[0]).to.have.ownProperty('direction');
