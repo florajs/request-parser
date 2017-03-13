@@ -77,10 +77,10 @@ combined_attribute
       var obj = head;
       for (var o in obj) {
         if (obj[o].select) {
-          // single_attribute was "a[b,c]" => append to all
-          for (var sub in obj[o].select) {
-            obj[o].select[sub].select = tail;
-          }
+          // single_attribute was "a[b,c]" => append to all leaves
+          getLeaves(obj).forEach(function (sub) {
+            sub.select = tail;
+          });
         } else {
           obj[o].select = tail;
         }
