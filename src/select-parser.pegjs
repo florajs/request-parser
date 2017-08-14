@@ -151,7 +151,7 @@ ident
 
 // String handling
 quoted_string
-  = '"' (ca:single_char*) '"' { return '"' + ca.join('') + '"'; }
+  = '"' ca:single_char* '"' { return '"' + ca.join('') + '"'; }
 
 single_char
   = escaped_quotes

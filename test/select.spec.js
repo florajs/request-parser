@@ -58,6 +58,14 @@ describe('select-parser', () => {
             });
         });
 
+        it('accepts strings in filter', () => {
+            expect(selectParser('foo(filter=bar="baz")')).to.eql({
+                foo: {
+                    filter: [[{ attribute: ['bar'], operator: 'equal', value: 'baz' }]]
+                }
+            });
+        });
+
         it('merges options: "a(b=c),a.b"', () => {
             expect(selectParser('a(b=c),a.b')).to.eql({ a: { b: 'c', select: { b: {} } } });
             expect(selectParser('a(b=c)(d=e),a.b')).to.eql({ a: { b: 'c', d: 'e', select: { b: {} } } });
@@ -307,5 +315,28 @@ describe('select-parser', () => {
                 }
             });
         });
+
+        it('parses \'id,name,slug,itemType,description,image,media(filter=type="image").link\'', () => {
+            expect(selectParser('id,name,slug,itemType,description,image,media(filter=type="image").link')).to.eql({
+                description: {},
+                id: {},
+                image: {},
+                itemType: {},
+                media: {
+                    filter: [
+                        [
+                            {
+                                attribute: ['type'],
+                                operator: 'equal',
+                                value: 'image'
+                            }
+                        ]
+                    ],
+                    select: { link: {} }
+                },
+                name: {},
+                slug: {}
+            });
+        })
     });
 });
