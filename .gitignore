@@ -5,3 +5,4 @@ node_modules/
 npm-debug.log
 select-parser.js
 mocha.json
+package-lock.json
