@@ -1,3 +1,5 @@
+/* global describe, it */
+
 'use strict';
 
 const { expect } = require('chai');
@@ -10,9 +12,15 @@ describe('request-parser', () => {
     });
 
     it('throws an error if parameter is not an object', () => {
-        expect((() => { requestParser(); })).to.throw(Error);
-        expect((() => { requestParser(42); })).to.throw(Error);
-        expect((() => { requestParser('foo'); })).to.throw(Error);
+        expect(() => {
+            requestParser();
+        }).to.throw(Error);
+        expect(() => {
+            requestParser(42);
+        }).to.throw(Error);
+        expect(() => {
+            requestParser('foo');
+        }).to.throw(Error);
     });
 
     it('should return an object', () => {
@@ -32,7 +40,9 @@ describe('request-parser', () => {
 
     describe('aggregate', () => {
         it('is not implemented', () => {
-            expect((() => { requestParser({ aggregate: {} }); })).to.throw(Error);
+            expect(() => {
+                requestParser({ aggregate: {} });
+            }).to.throw(Error);
         });
     });
 
@@ -43,7 +53,9 @@ describe('request-parser', () => {
         });
 
         it('throws an error if "limit" is invalid', () => {
-            expect((() => { requestParser({ limit: 'foo' }); })).to.throw(Error);
+            expect(() => {
+                requestParser({ limit: 'foo' });
+            }).to.throw(Error);
         });
     });
 
@@ -54,7 +66,9 @@ describe('request-parser', () => {
         });
 
         it('throws an error if "page" is invalid', () => {
-            expect((() => { requestParser({ page: 'foo' }); })).to.throw(Error);
+            expect(() => {
+                requestParser({ page: 'foo' });
+            }).to.throw(Error);
         });
     });
 
@@ -65,7 +79,9 @@ describe('request-parser', () => {
         });
 
         it('throws an error if "order" is invalid', () => {
-            expect((() => { requestParser({ order: 42 }); })).to.throw(Error);
+            expect(() => {
+                requestParser({ order: 42 });
+            }).to.throw(Error);
         });
     });
 
@@ -83,9 +99,15 @@ describe('request-parser', () => {
         });
 
         it('throws an error if "select" is invalid', () => {
-            expect((() => { requestParser({ select: 42 }); })).to.throw(Error);
-            expect((() => { requestParser({ select: '' }); })).to.throw(Error);
-            expect((() => { requestParser({ select: { foo: 'bar' } }); })).to.throw(Error);
+            expect(() => {
+                requestParser({ select: 42 });
+            }).to.throw(Error);
+            expect(() => {
+                requestParser({ select: '' });
+            }).to.throw(Error);
+            expect(() => {
+                requestParser({ select: { foo: 'bar' } });
+            }).to.throw(Error);
         });
     });
 
@@ -96,9 +118,15 @@ describe('request-parser', () => {
         });
 
         it('throws an error if "filter" is invalid', () => {
-            expect((() => { requestParser({ filter: 42 }); })).to.throw(Error);
-            expect((() => { requestParser({ filter: '' }); })).to.throw(Error);
-            expect((() => { requestParser({ filter: { foo: 'bar' } }); })).to.throw(Error);
+            expect(() => {
+                requestParser({ filter: 42 });
+            }).to.throw(Error);
+            expect(() => {
+                requestParser({ filter: '' });
+            }).to.throw(Error);
+            expect(() => {
+                requestParser({ filter: { foo: 'bar' } });
+            }).to.throw(Error);
         });
     });
 });

@@ -1,3 +1,5 @@
+/* global describe, it */
+
 'use strict';
 
 const { expect } = require('chai');
@@ -26,15 +28,29 @@ describe('page-parser', () => {
     });
 
     it('should throw an error for non-number strings', () => {
-        expect((() => { pageParser('foo'); })).to.throw(Error);
-        expect((() => { pageParser({}); })).to.throw(Error);
-        expect((() => { pageParser([]); })).to.throw(Error);
+        expect(() => {
+            pageParser('foo');
+        }).to.throw(Error);
+        expect(() => {
+            pageParser({});
+        }).to.throw(Error);
+        expect(() => {
+            pageParser([]);
+        }).to.throw(Error);
     });
 
     it('should throw an error for numbers < 1', () => {
-        expect((() => { pageParser(0); })).to.throw(Error);
-        expect((() => { pageParser('0'); })).to.throw(Error);
-        expect((() => { pageParser(-1); })).to.throw(Error);
-        expect((() => { pageParser(-100); })).to.throw(Error);
+        expect(() => {
+            pageParser(0);
+        }).to.throw(Error);
+        expect(() => {
+            pageParser('0');
+        }).to.throw(Error);
+        expect(() => {
+            pageParser(-1);
+        }).to.throw(Error);
+        expect(() => {
+            pageParser(-100);
+        }).to.throw(Error);
     });
 });

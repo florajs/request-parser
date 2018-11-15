@@ -1,3 +1,5 @@
+/* global describe, it */
+
 'use strict';
 
 const { expect } = require('chai');
@@ -10,43 +12,73 @@ describe('order-parser', () => {
     });
 
     it('should throw an error for non-string arguments', () => {
-        expect((() => { orderParser(1); })).to.throw(Error);
-        expect((() => { orderParser({}); })).to.throw(Error);
-        expect((() => { orderParser([]); })).to.throw(Error);
+        expect(() => {
+            orderParser(1);
+        }).to.throw(Error);
+        expect(() => {
+            orderParser({});
+        }).to.throw(Error);
+        expect(() => {
+            orderParser([]);
+        }).to.throw(Error);
     });
 
     it('does not accept empty strings', () => {
-        expect((() => { orderParser(''); })).to.throw(Error);
-        expect((() => { orderParser(','); })).to.throw(Error);
+        expect(() => {
+            orderParser('');
+        }).to.throw(Error);
+        expect(() => {
+            orderParser(',');
+        }).to.throw(Error);
     });
 
     it('accepts single order parameters', () => {
-        expect((() => { orderParser('name:asc'); })).not.to.throw(Error);
+        expect(() => {
+            orderParser('name:asc');
+        }).not.to.throw(Error);
     });
 
     it('accepts multiple order parameters', () => {
-        expect((() => { orderParser('name:asc,type:desc'); })).not.to.throw(Error);
+        expect(() => {
+            orderParser('name:asc,type:desc');
+        }).not.to.throw(Error);
     });
 
     it('should throw an error for invalid order parameters', () => {
-        expect((() => { orderParser('foo'); })).to.throw(Error);
-        expect((() => { orderParser('name:asc,type'); })).to.throw(Error);
-        expect((() => { orderParser('name:asc:foo'); })).to.throw(Error);
+        expect(() => {
+            orderParser('foo');
+        }).to.throw(Error);
+        expect(() => {
+            orderParser('name:asc,type');
+        }).to.throw(Error);
+        expect(() => {
+            orderParser('name:asc:foo');
+        }).to.throw(Error);
     });
 
     it('should throw an error for invalid order directions', () => {
-        expect((() => { orderParser('name:as'); })).to.throw(Error);
-        expect((() => { orderParser('name:ASC'); })).to.throw(Error);
+        expect(() => {
+            orderParser('name:as');
+        }).to.throw(Error);
+        expect(() => {
+            orderParser('name:ASC');
+        }).to.throw(Error);
     });
 
     describe('"random" direction', () => {
         it('should be the only order element', () => {
-            expect((() => { orderParser(':random'); })).not.to.throw(Error);
-            expect((() => { orderParser('name:asc,:random'); })).to.throw(Error);
+            expect(() => {
+                orderParser(':random');
+            }).not.to.throw(Error);
+            expect(() => {
+                orderParser('name:asc,:random');
+            }).to.throw(Error);
         });
 
         it('should have no attribute', () => {
-            expect((() => { orderParser('name:random'); })).to.throw(Error);
+            expect(() => {
+                orderParser('name:random');
+            }).to.throw(Error);
         });
     });
 

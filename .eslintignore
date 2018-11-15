@@ -1,5 +1,1 @@
-build
-coverage
-node_modules
-test
 select-parser.js

@@ -1,3 +1,5 @@
+/* global describe, it */
+
 'use strict';
 
 const { expect } = require('chai');
@@ -10,6 +12,8 @@ describe('aggregate parser', () => {
     });
 
     it('should throw an error (not implemented)', () => {
-        expect((() => { aggregateParser({}); })).to.throw(Error);
+        expect(() => {
+            aggregateParser({});
+        }).to.throw(Error);
     });
 });

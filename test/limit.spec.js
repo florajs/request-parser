@@ -1,3 +1,5 @@
+/* global describe, it */
+
 'use strict';
 
 const { expect } = require('chai');
@@ -24,15 +26,29 @@ describe('limit parser', () => {
     });
 
     it('should throw an error for non-number strings', () => {
-        expect((() => { limitParser('foo'); })).to.throw(Error);
-        expect((() => { limitParser({}); })).to.throw(Error);
-        expect((() => { limitParser([]); })).to.throw(Error);
+        expect(() => {
+            limitParser('foo');
+        }).to.throw(Error);
+        expect(() => {
+            limitParser({});
+        }).to.throw(Error);
+        expect(() => {
+            limitParser([]);
+        }).to.throw(Error);
     });
 
     it('should throw an error for numbers < 1', () => {
-        expect((() => { limitParser(0); })).to.throw(Error);
-        expect((() => { limitParser('0'); })).to.throw(Error);
-        expect((() => { limitParser(-1); })).to.throw(Error);
-        expect((() => { limitParser(-100); })).to.throw(Error);
+        expect(() => {
+            limitParser(0);
+        }).to.throw(Error);
+        expect(() => {
+            limitParser('0');
+        }).to.throw(Error);
+        expect(() => {
+            limitParser(-1);
+        }).to.throw(Error);
+        expect(() => {
+            limitParser(-100);
+        }).to.throw(Error);
     });
 });

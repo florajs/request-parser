@@ -1,3 +1,5 @@
+/* global describe, it */
+
 'use strict';
 
 const { expect } = require('chai');
@@ -10,36 +12,44 @@ describe('filter parser', () => {
     });
 
     it('should throw an error for non-string arguments', () => {
-        expect((() => { filterParser(1); })).to.throw(Error);
-        expect((() => { filterParser({}); })).to.throw(Error);
-        expect((() => { filterParser([]); })).to.throw(Error);
+        expect(() => {
+            filterParser(1);
+        }).to.throw(Error);
+        expect(() => {
+            filterParser({});
+        }).to.throw(Error);
+        expect(() => {
+            filterParser([]);
+        }).to.throw(Error);
     });
 
     it('does not accept empty strings', () => {
-        expect((() => { filterParser(''); })).to.throw(Error);
+        expect(() => {
+            filterParser('');
+        }).to.throw(Error);
     });
 
     describe('filter by single attribute', () => {
         it('accepts single filter parameters', () => {
-            expect((() => { filterParser('type.id=1'); })).not.to.throw(Error);
+            expect(() => {
+                filterParser('type.id=1');
+            }).not.to.throw(Error);
         });
 
         it('parses single attributes', () => {
-            expect(filterParser('id=1')).to.eql([
-                [{ attribute: ['id'], operator: 'equal', value: 1 }]
-            ]);
+            expect(filterParser('id=1')).to.eql([[{ attribute: ['id'], operator: 'equal', value: 1 }]]);
         });
 
         it('parses single composite attributes (resolves attribute)', () => {
-            expect(filterParser('type.id=1')).to.eql([
-                [{ attribute: ['type', 'id'], operator: 'equal', value: 1 }]
-            ]);
+            expect(filterParser('type.id=1')).to.eql([[{ attribute: ['type', 'id'], operator: 'equal', value: 1 }]]);
         });
     });
 
     describe('multiple values', () => {
         it('accepts multiple values with ","', () => {
-            expect((() => { filterParser('type.id=1,2,3'); })).not.to.throw(Error);
+            expect(() => {
+                filterParser('type.id=1,2,3');
+            }).not.to.throw(Error);
         });
 
         it('parses into arrays', () => {
@@ -51,7 +61,9 @@ describe('filter parser', () => {
 
     describe('multiple attributes with "AND"', () => {
         it('accepts AND syntax', () => {
-            expect((() => { filterParser('type.id=1 AND categories.id=2'); })).not.to.throw(Error);
+            expect(() => {
+                filterParser('type.id=1 AND categories.id=2');
+            }).not.to.throw(Error);
         });
 
         it('parses into top-level array', () => {
@@ -66,7 +78,9 @@ describe('filter parser', () => {
 
     describe('multiple attributes with "OR"', () => {
         it('accepts OR syntax', () => {
-            expect((() => { filterParser('type.id=1 OR categories.id=2'); })).not.to.throw(Error);
+            expect(() => {
+                filterParser('type.id=1 OR categories.id=2');
+            }).not.to.throw(Error);
         });
 
         it('parses into second-level array', () => {
@@ -114,11 +128,15 @@ describe('filter parser', () => {
 
     describe('invalid syntax', () => {
         it('fails on missing operators', () => {
-            expect(() => { filterParser('a=1 b=2'); }).to.throw(Error);
+            expect(() => {
+                filterParser('a=1 b=2');
+            }).to.throw(Error);
         });
 
         it('fails on additional garbage', () => {
-            expect(() => { filterParser('a=1 asdfasdfsdfa'); }).to.throw(Error);
+            expect(() => {
+                filterParser('a=1 asdfasdfsdfa');
+            }).to.throw(Error);
         });
     });
 
@@ -164,92 +182,96 @@ describe('filter parser', () => {
 
     describe('operators', () => {
         it('equal', () => {
-            expect((filterParser('equal=1'))[0][0].operator).to.equal('equal');
+            expect(filterParser('equal=1')[0][0].operator).to.equal('equal');
         });
 
         it('notEqual', () => {
-            expect((filterParser('equal!=1'))[0][0].operator).to.equal('notEqual');
+            expect(filterParser('equal!=1')[0][0].operator).to.equal('notEqual');
         });
 
         it('greater', () => {
-            expect((filterParser('equal>1'))[0][0].operator).to.equal('greater');
+            expect(filterParser('equal>1')[0][0].operator).to.equal('greater');
         });
 
         it('greaterOrEqual', () => {
-            expect((filterParser('equal>=1'))[0][0].operator).to.equal('greaterOrEqual');
+            expect(filterParser('equal>=1')[0][0].operator).to.equal('greaterOrEqual');
         });
 
         it('less', () => {
-            expect((filterParser('equal<1'))[0][0].operator).to.equal('less');
+            expect(filterParser('equal<1')[0][0].operator).to.equal('less');
         });
 
         it('lessOrEqual', () => {
-            expect((filterParser('equal<=1'))[0][0].operator).to.equal('lessOrEqual');
+            expect(filterParser('equal<=1')[0][0].operator).to.equal('lessOrEqual');
         });
     });
 
     describe('data types', () => {
         it('int', () => {
-            expect((filterParser('foo=0'))[0][0].value).to.be.a('number');
-            expect((filterParser('foo=1'))[0][0].value).to.be.a('number');
+            expect(filterParser('foo=0')[0][0].value).to.be.a('number');
+            expect(filterParser('foo=1')[0][0].value).to.be.a('number');
         });
 
         it('float', () => {
-            expect((filterParser('foo=0.0'))[0][0].value).to.be.a('number');
-            expect((filterParser('foo=3.1415'))[0][0].value).to.be.a('number');
+            expect(filterParser('foo=0.0')[0][0].value).to.be.a('number');
+            expect(filterParser('foo=3.1415')[0][0].value).to.be.a('number');
         });
 
         it('boolean', () => {
-            expect((filterParser('foo=true'))[0][0].value).to.equal(true);
-            expect((filterParser('foo=false'))[0][0].value).to.equal(false);
+            expect(filterParser('foo=true')[0][0].value).to.equal(true);
+            expect(filterParser('foo=false')[0][0].value).to.equal(false);
         });
 
         it('string', () => {
-            expect((filterParser('foo="bar"'))[0][0].value).to.be.a('string');
-            expect((filterParser('foo="bar\\"baz"'))[0][0].value).to.be.a('string');
-            expect((filterParser('foo=""'))[0][0].value).to.be.a('string');
+            expect(filterParser('foo="bar"')[0][0].value).to.be.a('string');
+            expect(filterParser('foo="bar\\"baz"')[0][0].value).to.be.a('string');
+            expect(filterParser('foo=""')[0][0].value).to.be.a('string');
         });
 
         it('null', () => {
-            expect((filterParser('foo=null'))[0][0].value).to.equal(null);
+            expect(filterParser('foo=null')[0][0].value).to.equal(null);
         });
 
         it('null is case sensitive', () => {
-            expect((() => { filterParser('foo=Null'); })).to.throw(Error);
-            expect((() => { filterParser('foo=NULL'); })).to.throw(Error);
+            expect(() => {
+                filterParser('foo=Null');
+            }).to.throw(Error);
+            expect(() => {
+                filterParser('foo=NULL');
+            }).to.throw(Error);
         });
     });
 
     describe('complex examples', () => {
         it('parses "type.id=1 AND author.id=30 AND isPremium=false OR categories.id=20 OR title="DAX Tagesausblick""', () => {
-            expect(filterParser('type.id=1 AND author.id=30 AND isPremium=false OR categories.id=20 OR title="DAX Tagesausblick"')).to.eql([
+            expect(
+                filterParser(
+                    'type.id=1 AND author.id=30 AND isPremium=false OR categories.id=20 OR title="DAX Tagesausblick"'
+                )
+            ).to.eql([
                 [
                     { attribute: ['type', 'id'], operator: 'equal', value: 1 },
                     { attribute: ['author', 'id'], operator: 'equal', value: 30 },
-                    { attribute: ['isPremium'], operator: 'equal', value: false },
+                    { attribute: ['isPremium'], operator: 'equal', value: false }
                 ],
-                [
-                    { attribute: ['categories', 'id'], operator: 'equal', value: 20 }
-                ],
-                [
-                    { attribute: ['title'], operator: 'equal', value: 'DAX Tagesausblick' }
-                ]
+                [{ attribute: ['categories', 'id'], operator: 'equal', value: 20 }],
+                [{ attribute: ['title'], operator: 'equal', value: 'DAX Tagesausblick' }]
             ]);
         });
 
         it('parses "type.id=1 AND author.id=30 AND isPremium=false OR categories.id=20,65 OR title="DAX Tagesausblick""', () => {
-            expect(filterParser('type.id=1 AND author.id=30 AND isPremium=false OR categories.id=20,65 OR title="DAX Tagesausblick"')).to.eql([
+            expect(
+                filterParser(
+                    'type.id=1 AND author.id=30 AND isPremium=false OR categories.id=20,65 OR title="DAX Tagesausblick"'
+                )
+            ).to.eql([
                 [
                     { attribute: ['type', 'id'], operator: 'equal', value: 1 },
                     { attribute: ['author', 'id'], operator: 'equal', value: 30 },
-                    { attribute: ['isPremium'], operator: 'equal', value: false },
+                    { attribute: ['isPremium'], operator: 'equal', value: false }
                 ],
-                [
-                    { attribute: ['categories', 'id'], operator: 'equal', value: [20, 65] }
-                ],
-                [
-                    { attribute: ['title'], operator: 'equal', value: 'DAX Tagesausblick' }
-                ]
+                [{ attribute: ['categories', 'id'], operator: 'equal', value: [20, 65] }],
+                [{ attribute: ['title'], operator: 'equal', value: 'DAX Tagesausblick' }]
             ]);
         });
     });

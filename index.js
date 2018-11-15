@@ -11,5 +11,5 @@ module.exports = {
     page: require('./lib/page'),
     search: require('./lib/search'),
     select: require('./lib/select'),
-    parse: require('./lib/parse'),
+    parse: require('./lib/parse')
 };

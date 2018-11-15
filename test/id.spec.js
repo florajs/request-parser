@@ -1,3 +1,5 @@
+/* global describe, it */
+
 'use strict';
 
 const { expect } = require('chai');
@@ -17,11 +19,23 @@ describe('id parser', () => {
     });
 
     it('should only accept string or number', () => {
-        expect(() => { idParser(1); }).not.to.throw(Error);
-        expect(() => { idParser(3.1415); }).not.to.throw(Error);
-        expect(() => { idParser('foo'); }).not.to.throw(Error);
-        expect(() => { idParser([]); }).to.throw(Error);
-        expect(() => { idParser({}); }).to.throw(Error);
-        expect(() => { idParser(); }).to.throw(Error);
+        expect(() => {
+            idParser(1);
+        }).not.to.throw(Error);
+        expect(() => {
+            idParser(3.1415);
+        }).not.to.throw(Error);
+        expect(() => {
+            idParser('foo');
+        }).not.to.throw(Error);
+        expect(() => {
+            idParser([]);
+        }).to.throw(Error);
+        expect(() => {
+            idParser({});
+        }).to.throw(Error);
+        expect(() => {
+            idParser();
+        }).to.throw(Error);
     });
 });

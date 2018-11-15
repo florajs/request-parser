@@ -1,3 +1,5 @@
+/* global describe, it */
+
 'use strict';
 
 const { expect } = require('chai');
@@ -10,22 +12,36 @@ describe('select-parser', () => {
     });
 
     it('should throw an error for non-string arguments', () => {
-        expect((() => { selectParser(1); })).to.throw(Error);
-        expect((() => { selectParser({}); })).to.throw(Error);
-        expect((() => { selectParser([]); })).to.throw(Error);
+        expect(() => {
+            selectParser(1);
+        }).to.throw(Error);
+        expect(() => {
+            selectParser({});
+        }).to.throw(Error);
+        expect(() => {
+            selectParser([]);
+        }).to.throw(Error);
     });
 
     it('does not accept empty strings', () => {
-        expect((() => { selectParser(''); })).to.throw(Error);
-        expect((() => { selectParser(','); })).to.throw(Error);
+        expect(() => {
+            selectParser('');
+        }).to.throw(Error);
+        expect(() => {
+            selectParser(',');
+        }).to.throw(Error);
     });
 
     it('accepts single select parameters', () => {
-        expect((() => { selectParser('title'); })).not.to.throw(Error);
+        expect(() => {
+            selectParser('title');
+        }).not.to.throw(Error);
     });
 
     it('accepts multiple select parameters', () => {
-        expect((() => { selectParser('title,instruments'); })).not.to.throw(Error);
+        expect(() => {
+            selectParser('title,instruments');
+        }).not.to.throw(Error);
     });
 
     describe('attributes without parameters', () => {
@@ -47,7 +63,9 @@ describe('select-parser', () => {
         });
 
         it('accepts and passes through unknown parameters', () => {
-            expect((() => { selectParser('foo(a=1)'); })).not.to.throw(Error);
+            expect(() => {
+                selectParser('foo(a=1)');
+            }).not.to.throw(Error);
         });
 
         it('accepts array parameters in filter', () => {
@@ -72,26 +90,34 @@ describe('select-parser', () => {
         });
 
         it('throws an error if trying to merge options: "a(b=c),a(e=f)"', () => {
-            expect((() => { selectParser('a(b=c),a(e=f)'); })).to.throw(Error);
+            expect(() => {
+                selectParser('a(b=c),a(e=f)');
+            }).to.throw(Error);
         });
 
         it('throws an error if options are redefined', () => {
-            expect((() => { selectParser('a(b=c)(b=d)'); })).to.throw(Error);
+            expect(() => {
+                selectParser('a(b=c)(b=d)');
+            }).to.throw(Error);
         });
 
         it('does not accept invalid operators', () => {
-            expect((() => { selectParser('foo(limit>3)'); })).to.throw(Error);
+            expect(() => {
+                selectParser('foo(limit>3)');
+            }).to.throw(Error);
         });
 
         it('does not accept invalid parameters', () => {
-            expect((() => { selectParser('foo(limit=foo)'); })).to.throw(Error);
+            expect(() => {
+                selectParser('foo(limit=foo)');
+            }).to.throw(Error);
         });
 
         it('parses multiple parameters', () => {
             expect(selectParser('foo(limit=3)(order=name:asc)')).to.eql({
                 foo: {
                     order: [{ direction: 'asc', attribute: ['name'] }],
-                    limit: 3,
+                    limit: 3
                 }
             });
         });
@@ -112,7 +138,9 @@ describe('select-parser', () => {
 
     describe('attributes with children (brackets)', () => {
         it('fails on empty children "a[]"', () => {
-            expect(() => { selectParser('a[]'); }).to.throw(Error);
+            expect(() => {
+                selectParser('a[]');
+            }).to.throw(Error);
         });
 
         it('parses simple children "a[b]"', () => {
@@ -145,10 +173,14 @@ describe('select-parser', () => {
         });
 
         it('parses recursive children "a[b,c][d,e]"', () => {
-            expect(selectParser('a[b,c][d,e]')).to.eql({ a: { select: {
-                b: { select: { d: {}, e: {} } },
-                c: { select: { d: {}, e: {} } }
-            } } });
+            expect(selectParser('a[b,c][d,e]')).to.eql({
+                a: {
+                    select: {
+                        b: { select: { d: {}, e: {} } },
+                        c: { select: { d: {}, e: {} } }
+                    }
+                }
+            });
         });
 
         it('parses recursive children "a[b,c.x][d,e]"', () => {
@@ -181,13 +213,18 @@ describe('select-parser', () => {
         });
 
         it('parses brackets at top level (recursive) "[b,c][d,e]', () => {
-            expect(selectParser('[b,c][d,e]')).to.eql({ b: { select: { d: {}, e: {} } }, c: { select: { d: {}, e: {} } } });
+            expect(selectParser('[b,c][d,e]')).to.eql({
+                b: { select: { d: {}, e: {} } },
+                c: { select: { d: {}, e: {} } }
+            });
         });
     });
 
     describe('attributes with children (brackets) with parameters', () => {
         it('fails on empty children "a(limit=3)[]"', () => {
-            expect(() => { selectParser('a(limit=3)[]'); }).to.throw(Error);
+            expect(() => {
+                selectParser('a(limit=3)[]');
+            }).to.throw(Error);
         });
 
         it('parses simple parameters on root level', () => {
@@ -225,8 +262,12 @@ describe('select-parser', () => {
         });
 
         it('fails on invalid identifier', () => {
-            expect(() => { selectParser('a.*'); }).to.throw(Error);
-            expect(() => { selectParser('a.&'); }).to.throw(Error);
+            expect(() => {
+                selectParser('a.*');
+            }).to.throw(Error);
+            expect(() => {
+                selectParser('a.&');
+            }).to.throw(Error);
         });
 
         it('parses children with parameters', () => {
@@ -236,7 +277,9 @@ describe('select-parser', () => {
         });
 
         it('fails on duplicate dots', () => {
-            expect(() => { selectParser('a..b'); }).to.throw(Error);
+            expect(() => {
+                selectParser('a..b');
+            }).to.throw(Error);
         });
     });
 
@@ -274,26 +317,32 @@ describe('select-parser', () => {
         });
 
         it('parses "title,instruments(order=name:asc)(limit=3)(page=1).quotations(limit=4).quote"', () => {
-            expect(selectParser('title,instruments(order=name:asc)(limit=3)(page=1).quotations(limit=4).quote')).to.eql({
-                title: {},
-                instruments: {
-                    order: [{ attribute: ['name'], direction: 'asc' }],
-                    limit: 3,
-                    page: 1,
-                    select: {
-                        quotations: {
-                            limit: 4,
-                            select: {
-                                quote: {}
+            expect(selectParser('title,instruments(order=name:asc)(limit=3)(page=1).quotations(limit=4).quote')).to.eql(
+                {
+                    title: {},
+                    instruments: {
+                        order: [{ attribute: ['name'], direction: 'asc' }],
+                        limit: 3,
+                        page: 1,
+                        select: {
+                            quotations: {
+                                limit: 4,
+                                select: {
+                                    quote: {}
+                                }
                             }
                         }
                     }
                 }
-            });
+            );
         });
 
         it('parses "title,instruments(order=name:asc)(limit=3)(page=1).quotations(limit=4)[quote[value,changePerc]]"', () => {
-            expect(selectParser('title,instruments(order=name:asc)(limit=3)(page=1).quotations(limit=4)[quote[value,changePerc]]')).to.eql({
+            expect(
+                selectParser(
+                    'title,instruments(order=name:asc)(limit=3)(page=1).quotations(limit=4)[quote[value,changePerc]]'
+                )
+            ).to.eql({
                 title: {},
                 instruments: {
                     order: [{ attribute: ['name'], direction: 'asc' }],
@@ -337,6 +386,6 @@ describe('select-parser', () => {
                 name: {},
                 slug: {}
             });
-        })
+        });
     });
 });

@@ -1,3 +1,5 @@
+/* global describe, it */
+
 'use strict';
 
 const { expect } = require('chai');
@@ -28,7 +30,11 @@ describe('search-parser', () => {
     });
 
     it('should throw an error for non-strings', () => {
-        expect((() => { searchParser({}); })).to.throw(Error);
-        expect((() => { searchParser([]); })).to.throw(Error);
+        expect(() => {
+            searchParser({});
+        }).to.throw(Error);
+        expect(() => {
+            searchParser([]);
+        }).to.throw(Error);
     });
 });
