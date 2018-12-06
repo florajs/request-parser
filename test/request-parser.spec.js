@@ -23,18 +23,17 @@ describe('request-parser', () => {
         }).to.throw(Error);
     });
 
-    it('should return an object', () => {
-        expect(requestParser({})).to.be.an('object');
-    });
-
-    it('accepts and passes through unknown properties', () => {
-        expect(requestParser({ foo: 'bar' })).to.eql({ foo: 'bar' });
+    it('accepts and keeps unknown properties', () => {
+        const request = { foo: 'bar' };
+        requestParser(request);
+        expect(request).to.eql({ foo: 'bar' });
     });
 
     describe('id', () => {
         it('should parse "id" property', () => {
-            const parsed = requestParser({ id: 42 });
-            expect(parsed).to.be.an('object');
+            const request = { id: 42 };
+            requestParser(request);
+            expect(request).to.be.an('object');
         });
     });
 
@@ -48,8 +47,9 @@ describe('request-parser', () => {
 
     describe('limit', () => {
         it('should parse "limit" property', () => {
-            const parsed = requestParser({ limit: 42 });
-            expect(parsed).to.be.an('object');
+            const request = { limit: 42 };
+            requestParser(request);
+            expect(request).to.be.an('object');
         });
 
         it('throws an error if "limit" is invalid', () => {
@@ -61,8 +61,9 @@ describe('request-parser', () => {
 
     describe('page', () => {
         it('should parse "page" property', () => {
-            const parsed = requestParser({ page: 42 });
-            expect(parsed).to.be.an('object');
+            const request = { page: 42 };
+            requestParser(request);
+            expect(request).to.be.an('object');
         });
 
         it('throws an error if "page" is invalid', () => {
@@ -74,8 +75,9 @@ describe('request-parser', () => {
 
     describe('order', () => {
         it('should parse "order" property', () => {
-            const parsed = requestParser({ order: 'name:asc' });
-            expect(parsed).to.be.an('object');
+            const request = { order: 'name:asc' };
+            requestParser(request);
+            expect(request).to.be.an('object');
         });
 
         it('throws an error if "order" is invalid', () => {
@@ -87,15 +89,17 @@ describe('request-parser', () => {
 
     describe('search', () => {
         it('should parse "order" property', () => {
-            const parsed = requestParser({ search: 'foo' });
-            expect(parsed).to.be.an('object');
+            const request = { search: 'foo' };
+            requestParser(request);
+            expect(request).to.be.an('object');
         });
     });
 
     describe('select', () => {
         it('should parse "select" property', () => {
-            const parsed = requestParser({ select: 'title,instruments.id,quote[countryId]' });
-            expect(parsed).to.be.an('object');
+            const request = { select: 'title,instruments.id,quote[countryId]' };
+            requestParser(request);
+            expect(request).to.be.an('object');
         });
 
         it('throws an error if "select" is invalid', () => {
@@ -113,8 +117,9 @@ describe('request-parser', () => {
 
     describe('filter', () => {
         it('should parse "filter" property', () => {
-            const parsed = requestParser({ filter: 'type.id=1' });
-            expect(parsed).to.be.an('object');
+            const request = { filter: 'type.id=1' };
+            requestParser(request);
+            expect(request).to.be.an('object');
         });
 
         it('throws an error if "filter" is invalid', () => {
