@@ -28,7 +28,6 @@
   "dependencies": {
     "flora-errors": "^0.9.0",
     "flora-ql": "^3.0.0",
-    "has": "^1.0.1",
     "pegjs": "^0.10.0"
   },
   "devDependencies": {
