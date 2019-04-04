@@ -147,7 +147,7 @@ option_value_part
   / chars:[^()"]+ { return chars.join(''); }
 
 ident
-  = chars:[A-Za-z0-9_]+ { return chars.join(''); }
+  = chars:[A-Za-z0-9_{}]+ { return chars.join(''); }
 
 // String handling
 quoted_string

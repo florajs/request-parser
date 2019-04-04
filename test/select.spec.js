@@ -388,4 +388,32 @@ describe('select-parser', () => {
             });
         });
     });
+
+    describe('options.enableBraces', () => {
+        it('throws error if attribute contains braces', () => {
+            expect(() => selectParser('foo,bar,{baz}')).to.throw(SyntaxError);
+        });
+
+        it('allows curly braces if enableBraces=true', () => {
+            expect(() => selectParser('foo,bar,{baz}', { enableBraces: true })).not.to.throw(SyntaxError);
+            expect(selectParser('foo,bar,{baz}', { enableBraces: true })).to.eql({
+                foo: {},
+                bar: {},
+                '{baz}': {}
+            });
+            expect(selectParser('foo,bar,{baz}.test', { enableBraces: true })).to.eql({
+                foo: {},
+                bar: {},
+                '{baz}': {
+                    select: {
+                        test: {}
+                    }
+                }
+            });
+        });
+
+        it('disallows curly braces at non-root level even if enableBraces=true', () => {
+            expect(() => selectParser('foo,bar,test.{baz}', { enableBraces: true })).to.throw(SyntaxError);
+        });
+    });
 });
