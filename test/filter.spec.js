@@ -138,6 +138,18 @@ describe('filter parser', () => {
                 filterParser('a=1 asdfasdfsdfa');
             }).to.throw(Error);
         });
+
+        it('fails on invalid range', () => {
+            expect(() => {
+                filterParser('a=1..2..3');
+            }).to.throw(Error);
+        });
+
+        it('fails on invalid range operator', () => {
+            expect(() => {
+                filterParser('a>1..2');
+            }).to.throw(Error);
+        });
     });
 
     describe('attribute paths', () => {
@@ -204,6 +216,14 @@ describe('filter parser', () => {
         it('lessOrEqual', () => {
             expect(filterParser('equal<=1')[0][0].operator).to.equal('lessOrEqual');
         });
+
+        it('between', () => {
+            expect(filterParser('foo=10..20')[0][0].operator).to.equal('between');
+        });
+
+        it('notBetween', () => {
+            expect(filterParser('foo!=10..20')[0][0].operator).to.equal('notBetween');
+        });
     });
 
     describe('data types', () => {
@@ -239,6 +259,18 @@ describe('filter parser', () => {
             expect(() => {
                 filterParser('foo=NULL');
             }).to.throw(Error);
+        });
+    });
+
+    describe('ranges', () => {
+        it('parses ranges (int)', () => {
+            expect(filterParser('foo=10..20')).to.eql([[{ attribute: ['foo'], operator: 'between', value: [10, 20] }]]);
+        });
+
+        it('parses ranges (string)', () => {
+            expect(filterParser('foo="2018-01-01".."2019-01-01"')).to.eql([
+                [{ attribute: ['foo'], operator: 'between', value: ['2018-01-01', '2019-01-01'] }]
+            ]);
         });
     });
 
