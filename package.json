@@ -23,11 +23,11 @@
     }
   ],
   "engines": {
-    "node": ">=8"
+    "node": ">=10"
   },
   "dependencies": {
     "flora-errors": "^0.9.1",
-    "flora-ql": "^3.0.0",
+    "flora-ql": "^3.1.0",
     "pegjs": "^0.10.0"
   },
   "devDependencies": {
