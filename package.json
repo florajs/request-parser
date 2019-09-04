@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "flora-errors": "^2.0.0",
-    "flora-ql": "^3.2.1",
+    "flora-ql": "^3.2.2",
     "pegjs": "^0.10.0"
   },
   "devDependencies": {

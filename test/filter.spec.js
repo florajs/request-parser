@@ -306,5 +306,32 @@ describe('filter parser', () => {
                 [{ attribute: ['title'], operator: 'equal', value: 'DAX Tagesausblick' }]
             ]);
         });
+
+        it('parses "country.id=49,63,71,73,75,77 AND componentOf.id=317363,133965,133954 AND (splits.simple.exDate="2019-09-03T22:00:00.000Z".."2019-09-04T21:59:59.999Z" OR splits.complex.exDate="2019-09-03T22:00:00.000Z".."2019-09-04T21:59:59.999Z")"', () => {
+            expect(
+                filterParser(
+                    'country.id=49,63,71,73,75,77 AND componentOf.id=317363,133965,133954 AND (splits.simple.exDate="2019-09-03T22:00:00.000Z".."2019-09-04T21:59:59.999Z" OR splits.complex.exDate="2019-09-03T22:00:00.000Z".."2019-09-04T21:59:59.999Z")'
+                )
+            ).to.eql([
+                [
+                    { attribute: ['country', 'id'], operator: 'equal', value: [49, 63, 71, 73, 75, 77] },
+                    { attribute: ['componentOf', 'id'], operator: 'equal', value: [317363, 133965, 133954] },
+                    {
+                        attribute: ['splits', 'simple', 'exDate'],
+                        operator: 'between',
+                        value: ['2019-09-03T22:00:00.000Z', '2019-09-04T21:59:59.999Z']
+                    }
+                ],
+                [
+                    { attribute: ['country', 'id'], operator: 'equal', value: [49, 63, 71, 73, 75, 77] },
+                    { attribute: ['componentOf', 'id'], operator: 'equal', value: [317363, 133965, 133954] },
+                    {
+                        attribute: ['splits', 'complex', 'exDate'],
+                        operator: 'between',
+                        value: ['2019-09-03T22:00:00.000Z', '2019-09-04T21:59:59.999Z']
+                    }
+                ]
+            ]);
+        });
     });
 });
