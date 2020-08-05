@@ -260,6 +260,12 @@ describe('filter parser', () => {
                 filterParser('foo=NULL');
             }).to.throw(Error);
         });
+
+        it('undefined', () => {
+            expect(() => {
+                filterParser('a=undefined');
+            }).to.throw(Error);
+        });
     });
 
     describe('ranges', () => {
