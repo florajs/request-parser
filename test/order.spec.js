@@ -69,7 +69,7 @@ describe('order-parser', () => {
         it('should be the only order element', () => {
             expect(() => {
                 orderParser(':random');
-            }).not.to.throw(Error);
+            }).to.throw(Error);
             expect(() => {
                 orderParser('name:asc,:random');
             }).to.throw(Error);
@@ -78,7 +78,7 @@ describe('order-parser', () => {
         it('should have no attribute', () => {
             expect(() => {
                 orderParser('name:random');
-            }).to.throw(Error);
+            }).not.to.throw(Error);
         });
     });
 
