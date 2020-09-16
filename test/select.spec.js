@@ -84,6 +84,23 @@ describe('select-parser', () => {
             });
         });
 
+        it('accepts parentheses in filter', () => {
+            expect(selectParser('foo(filter=bar="baz" AND (attr2=3 OR attr3="4"))')).to.eql({
+                foo: {
+                    filter: [
+                        [
+                            { attribute: ['bar'], operator: 'equal', value: 'baz' },
+                            { attribute: ['attr2'], operator: 'equal', value: 3 }
+                        ],
+                        [
+                            { attribute: ['bar'], operator: 'equal', value: 'baz' },
+                            { attribute: ['attr3'], operator: 'equal', value: '4' }
+                        ]
+                    ]
+                }
+            });
+        });
+
         it('merges options: "a(b=c),a.b"', () => {
             expect(selectParser('a(b=c),a.b')).to.eql({ a: { b: 'c', select: { b: {} } } });
             expect(selectParser('a(b=c)(d=e),a.b')).to.eql({ a: { b: 'c', d: 'e', select: { b: {} } } });
