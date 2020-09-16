@@ -143,11 +143,15 @@ option_value
   = parts:option_value_part+ { return parts.join(''); }
 
 option_value_part
-  = str:quoted_string
+  = quoted_string
+  / balanced_parentheses
   / chars:[^()"]+ { return chars.join(''); }
 
 ident
   = chars:[A-Za-z0-9_{}]+ { return chars.join(''); }
+
+balanced_parentheses
+  = '(' v:option_value_part+ ')' { return '(' + v.join('') + ')'; }
 
 // String handling
 quoted_string
