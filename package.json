@@ -4,7 +4,7 @@
   "description": "Request parser for Flora",
   "main": "index.js",
   "scripts": {
-    "install": "pegjs -o select-parser.js ./src/select-parser.pegjs",
+    "install": "peggy -o select-parser.js ./src/select-parser.pegjs",
     "test": "eslint . && mocha",
     "lint": "eslint ."
   },
@@ -28,7 +28,7 @@
   "dependencies": {
     "flora-errors": "^2.0.0",
     "flora-ql": "^3.2.3",
-    "pegjs": "^0.10.0"
+    "peggy": "^1.2.0"
   },
   "devDependencies": {
     "chai": "^4.2.0",
