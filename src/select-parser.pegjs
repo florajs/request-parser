@@ -1,12 +1,12 @@
 {
   var parsers = {
-    'id': require('./lib/id'),
-    'aggregate': require('./lib/aggregate'),
-    'filter': require('./lib/filter'),
-    'limit': require('./lib/limit'),
-    'order': require('./lib/order'),
-    'page': require('./lib/page'),
-    'search': require('./lib/search')
+    'id': require('../lib/id'),
+    'aggregate': require('../lib/aggregate'),
+    'filter': require('../lib/filter'),
+    'limit': require('../lib/limit'),
+    'order': require('../lib/order'),
+    'page': require('../lib/page'),
+    'search': require('../lib/search')
   };
 
   function excludeSelect(key) {

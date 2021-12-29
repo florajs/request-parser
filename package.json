@@ -4,7 +4,7 @@
   "description": "Request parser for Flora",
   "main": "index.js",
   "scripts": {
-    "install": "peggy -o select-parser.js ./src/select-parser.pegjs",
+    "install": "mkdir -p build && peggy -o ./build/select-parser.js ./src/select-parser.pegjs",
     "test": "eslint . && mocha",
     "lint": "eslint ."
   },
