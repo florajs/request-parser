@@ -18,9 +18,9 @@
     "name": "BörseGo AG",
     "email": "it@boerse-go.de"
   },
-  "homepage": "https://github.com/godmodelabs/flora-request-parser",
+  "homepage": "https://github.com/florajs/request-parser",
   "license": "MIT",
-  "repository": "godmodelabs/flora-request-parser",
+  "repository": "florajs/request-parser",
   "contributors": [
     {
       "name": "Nico Kaiser",

@@ -1,10 +1,10 @@
 # flora-request-parser
 
-![](https://github.com/godmodelabs/flora-request-parser/workflows/ci/badge.svg)
+![](https://github.com/florajs/request-parser/workflows/ci/badge.svg)
 [![NPM version](https://img.shields.io/npm/v/flora-request-parser.svg?style=flat)](https://www.npmjs.com/package/flora-request-parser)
 [![NPM downloads](https://img.shields.io/npm/dm/flora-request-parser.svg?style=flat)](https://www.npmjs.com/package/flora-request-parser)
 
-Parse [Flora](https://github.com/godmodelabs/flora) requests into the internal object format.
+Parse [Flora](https://github.com/florajs/flora) requests into the internal object format.
 
 ## Usage
 
