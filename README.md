@@ -1,15 +1,15 @@
-# flora-request-parser
+# @florajs/request-parser
 
 ![](https://github.com/florajs/request-parser/workflows/ci/badge.svg)
-[![NPM version](https://img.shields.io/npm/v/flora-request-parser.svg?style=flat)](https://www.npmjs.com/package/flora-request-parser)
-[![NPM downloads](https://img.shields.io/npm/dm/flora-request-parser.svg?style=flat)](https://www.npmjs.com/package/flora-request-parser)
+[![NPM version](https://img.shields.io/npm/v/@florajs/request-parser.svg?style=flat)](https://www.npmjs.com/package/@florajs/request-parser)
+[![NPM downloads](https://img.shields.io/npm/dm/@florajs/request-parser.svg?style=flat)](https://www.npmjs.com/package/@florajs/request-parser)
 
 Parse [Flora](https://github.com/florajs/flora) requests into the internal object format.
 
 ## Usage
 
 ```js
-const { parse } = require('flora-request-parser');
+const { parse } = require('@florajs/request-parser');
 
 parse({
     id: 42,
