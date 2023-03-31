@@ -17,6 +17,7 @@ describe('limit parser', () => {
     it('should accept number strings and convert them', () => {
         expect(limitParser('1')).to.be.a('number');
         expect(limitParser('1234')).to.equal(1234);
+        expect(limitParser('999999999999999')).to.equal(999999999999999);
     });
 
     it('should return null for "unlimited"', () => {
@@ -32,6 +33,27 @@ describe('limit parser', () => {
         }).to.throw(Error);
         expect(() => {
             limitParser([]);
+        }).to.throw(Error);
+    });
+
+    it('should throw an error for strings that are isNaN, nut might be parsed by parseInt', () => {
+        expect(() => {
+            limitParser('5;1');
+        }).to.throw(Error);
+    });
+
+    it('should throw an error for non-integers', () => {
+        expect(() => {
+            limitParser(5.1);
+        }).to.throw(Error);
+        expect(() => {
+            limitParser('5.1');
+        }).to.throw(Error);
+    });
+
+    it('should throw an error for unsafe integers', () => {
+        expect(() => {
+            limitParser('999999999999999999');
         }).to.throw(Error);
     });
 
