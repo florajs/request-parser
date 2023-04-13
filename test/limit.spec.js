@@ -27,48 +27,48 @@ describe('limit parser', () => {
     it('should throw an error for non-number strings', () => {
         expect(() => {
             limitParser('foo');
-        }).to.throw(Error);
+        }).to.throw(Error, 'limit must be an integer or "unlimited"');
         expect(() => {
             limitParser({});
-        }).to.throw(Error);
+        }).to.throw(Error, 'limit must be an integer or "unlimited"');
         expect(() => {
             limitParser([]);
-        }).to.throw(Error);
+        }).to.throw(Error, 'limit must be an integer or "unlimited"');
     });
 
-    it('should throw an error for strings that are isNaN, nut might be parsed by parseInt', () => {
+    it('should throw an error for strings that are isNaN, but might be parsed by parseInt', () => {
         expect(() => {
             limitParser('5;1');
-        }).to.throw(Error);
+        }).to.throw(Error, 'limit must be an integer or "unlimited"');
     });
 
     it('should throw an error for non-integers', () => {
         expect(() => {
             limitParser(5.1);
-        }).to.throw(Error);
+        }).to.throw(Error, 'limit must be an integer or "unlimited"');
         expect(() => {
             limitParser('5.1');
-        }).to.throw(Error);
+        }).to.throw(Error, 'limit must be an integer or "unlimited"');
     });
 
     it('should throw an error for unsafe integers', () => {
         expect(() => {
             limitParser('999999999999999999');
-        }).to.throw(Error);
+        }).to.throw(Error, 'limit must be an integer or "unlimited"');
     });
 
     it('should throw an error for numbers < 1', () => {
         expect(() => {
             limitParser(0);
-        }).to.throw(Error);
+        }).to.throw(Error, 'limit must be greater than 0');
         expect(() => {
             limitParser('0');
+        }).to.throw(Error, 'limit must be greater than 0');
+        expect(() => {
+            limitParser(-1, 'limit must be greater than 0');
         }).to.throw(Error);
         expect(() => {
-            limitParser(-1);
-        }).to.throw(Error);
-        expect(() => {
-            limitParser(-100);
+            limitParser(-100, 'limit must be greater than 0');
         }).to.throw(Error);
     });
 });
