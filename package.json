@@ -31,11 +31,11 @@
     }
   ],
   "engines": {
-    "node": ">=12"
+    "node": ">=16"
   },
   "dependencies": {
-    "@florajs/errors": "^3.0.0",
-    "@florajs/ql": "^4.0.0",
+    "@florajs/errors": "^4.0.0",
+    "@florajs/ql": "^5.0.0",
     "peggy": "^1.2.0"
   },
   "devDependencies": {
