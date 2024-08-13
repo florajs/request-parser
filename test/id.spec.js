@@ -1,39 +1,27 @@
 'use strict';
 
-const { expect } = require('chai');
-
+const { describe, it } = require('node:test');
+const assert = require('node:assert');
 const idParser = require('../').id;
 
 describe('id parser', () => {
     it('should be a function', () => {
-        expect(idParser).to.be.a('function');
+        assert.equal(typeof idParser, 'function');
     });
 
     it('should return the input as string', () => {
-        expect(idParser(1)).to.be.a('string');
-        expect(idParser(1)).to.equal('1');
-        expect(idParser(3.1415)).to.equal('3.1415');
-        expect(idParser('foo')).to.equal('foo');
+        assert.equal(typeof idParser(1), 'string');
+        assert.equal(idParser(1), '1');
+        assert.equal(idParser(3.1415), '3.1415');
+        assert.equal(idParser('foo'), 'foo');
     });
 
     it('should only accept string or number', () => {
-        expect(() => {
-            idParser(1);
-        }).not.to.throw(Error);
-        expect(() => {
-            idParser(3.1415);
-        }).not.to.throw(Error);
-        expect(() => {
-            idParser('foo');
-        }).not.to.throw(Error);
-        expect(() => {
-            idParser([]);
-        }).to.throw(Error);
-        expect(() => {
-            idParser({});
-        }).to.throw(Error);
-        expect(() => {
-            idParser();
-        }).to.throw(Error);
+        assert.doesNotThrow(() => idParser(1));
+        assert.doesNotThrow(() => idParser(3.1415));
+        assert.doesNotThrow(() => idParser('foo'));
+        assert.throws(() => idParser([]));
+        assert.throws(() => idParser({}));
+        assert.throws(() => idParser());
     });
 });

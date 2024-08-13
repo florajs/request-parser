@@ -1,54 +1,40 @@
 'use strict';
 
-const { expect } = require('chai');
-
+const { describe, it } = require('node:test');
+const assert = require('node:assert');
 const pageParser = require('../').page;
 
 describe('page-parser', () => {
     it('should be a function', () => {
-        expect(pageParser).to.be.a('function');
+        assert.equal(typeof pageParser, 'function');
     });
 
     it('should return a number', () => {
-        expect(pageParser(1)).to.be.a('number');
-        expect(pageParser(1234)).to.equal(1234);
+        assert.equal(typeof pageParser(1), 'number');
+        assert.equal(pageParser(1234), 1234);
     });
 
     it('should accept number strings and convert them', () => {
-        expect(pageParser('1')).to.be.a('number');
-        expect(pageParser('1234')).to.equal(1234);
+        assert.equal(typeof pageParser('1'), 'number');
+        assert.equal(pageParser('1234'), 1234);
     });
 
     it('should return 1 for undefined', () => {
         const output = pageParser();
-        expect(output).to.be.a('number');
-        expect(output).to.equal(1);
+        assert.equal(typeof output, 'number');
+        assert.equal(output, 1);
     });
 
     it('should throw an error for non-number strings', () => {
-        expect(() => {
-            pageParser('foo');
-        }).to.throw(Error);
-        expect(() => {
-            pageParser({});
-        }).to.throw(Error);
-        expect(() => {
-            pageParser([]);
-        }).to.throw(Error);
+        assert.throws(() => pageParser('foo'));
+        assert.throws(() => pageParser({}));
+        assert.throws(() => pageParser([]));
     });
 
     it('should throw an error for numbers < 1', () => {
-        expect(() => {
-            pageParser(0);
-        }).to.throw(Error);
-        expect(() => {
-            pageParser('0');
-        }).to.throw(Error);
-        expect(() => {
-            pageParser(-1);
-        }).to.throw(Error);
-        expect(() => {
-            pageParser(-100);
-        }).to.throw(Error);
+        assert.throws(() => pageParser(0));
+        assert.throws(() => pageParser('0'));
+        assert.throws(() => pageParser(-1));
+        assert.throws(() => pageParser(-100));
     });
 });

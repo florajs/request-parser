@@ -1,17 +1,15 @@
 'use strict';
 
-const { expect } = require('chai');
-
+const { describe, it } = require('node:test');
+const assert = require('node:assert');
 const aggregateParser = require('../').aggregate;
 
 describe('aggregate parser', () => {
     it('should be a function', () => {
-        expect(aggregateParser).to.be.a('function');
+        assert.equal(typeof aggregateParser, 'function');
     });
 
     it('should throw an error (not implemented)', () => {
-        expect(() => {
-            aggregateParser({});
-        }).to.throw(Error);
+        assert.throws(() => aggregateParser({}));
     });
 });
