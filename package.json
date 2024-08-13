@@ -37,7 +37,7 @@
   "dependencies": {
     "@florajs/errors": "^4.0.0",
     "@florajs/ql": "^6.0.0",
-    "peggy": "^1.2.0"
+    "peggy": "^4.0.3"
   },
   "devDependencies": {
     "eslint": "^9.9.0",
