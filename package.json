@@ -14,7 +14,6 @@
     "lib/",
     "src/"
   ],
-  "pre-commit": "test",
   "author": {
     "name": "stock3 AG",
     "email": "it@stock3.com"
@@ -36,14 +35,13 @@
   },
   "dependencies": {
     "@florajs/errors": "^4.0.0",
-    "@florajs/ql": "^6.0.0",
-    "peggy": "^4.0.3"
+    "@florajs/ql": "^6.0.1",
+    "peggy": "^4.1.1"
   },
   "devDependencies": {
-    "eslint": "^9.9.0",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-prettier": "^5.2.1",
-    "pre-commit": "^1.2.2",
-    "prettier": "^3.3.3"
+    "eslint": "^9.25.1",
+    "eslint-config-prettier": "^10.1.2",
+    "eslint-plugin-prettier": "^5.2.6",
+    "prettier": "^3.5.3"
   }
 }
