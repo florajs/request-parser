@@ -4,12 +4,14 @@
   "description": "Request parser for Flora",
   "main": "index.js",
   "scripts": {
-    "install": "mkdir -p build && peggy -o ./build/select-parser.js ./src/select-parser.pegjs",
+    "build": "mkdir -p build && peggy -o ./build/select-parser.js ./src/select-parser.pegjs",
+    "prepack": "npm run build",
+    "pretest": "npm run lint && npm run build",
     "test": "node --test",
-    "pretest": "npm run lint",
     "lint": "eslint ."
   },
   "files": [
+    "build/select-parser.js",
     "index.js",
     "lib/",
     "src/"
@@ -35,13 +37,13 @@
   },
   "dependencies": {
     "@florajs/errors": "^4.0.0",
-    "@florajs/ql": "^6.0.1",
-    "peggy": "^4.1.1"
+    "@florajs/ql": "^6.0.1"
   },
   "devDependencies": {
     "eslint": "^9.25.1",
     "eslint-config-prettier": "^10.1.2",
     "eslint-plugin-prettier": "^5.2.6",
+    "peggy": "^4.2.0",
     "prettier": "^3.5.3"
   }
 }
