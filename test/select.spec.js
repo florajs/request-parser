@@ -35,11 +35,11 @@ describe('select-parser', () => {
     );
 
     it('accepts single select parameters', () => {
-        assert.doesNotThrow(() => selectParser('title'));
+        assert.deepEqual(selectParser('title'), { title: {} });
     });
 
     it('accepts multiple select parameters', () => {
-        assert.doesNotThrow(() => selectParser('title,instruments'));
+        assert.deepEqual(selectParser('title,instruments'), { title: {}, instruments: {} });
     });
 
     describe('attributes without parameters', () => {
@@ -61,7 +61,7 @@ describe('select-parser', () => {
         });
 
         it('accepts and passes through unknown parameters', () => {
-            assert.doesNotThrow(() => selectParser('foo(a=1)'));
+            assert.deepEqual(selectParser('foo(a=1)'), { foo: { a: '1' } });
         });
 
         it('accepts array parameters in filter', () => {
@@ -419,7 +419,6 @@ describe('select-parser', () => {
         });
 
         it('allows curly braces if enableBraces=true', () => {
-            assert.doesNotThrow(() => selectParser('foo,bar,{baz}', { enableBraces: true }));
             assert.deepEqual(selectParser('foo,bar,{baz}', { enableBraces: true }), {
                 foo: {},
                 bar: {},
