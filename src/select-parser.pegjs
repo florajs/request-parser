@@ -115,7 +115,7 @@ options
   = options:option* {
       var obj = {};
       for (var i = 0; i < options.length; i++) {
-        if (obj.hasOwnProperty(options[i][0])) {
+        if (Object.hasOwn(obj, options[i][0])) {
             throw new Error('Cannot redefine option "' + options[i][0] + '"');
         }
         obj[options[i][0]] = options[i][1];
@@ -125,7 +125,7 @@ options
 
 option
   = '(' key:option_key '=' val:option_value ')' {
-      if (parsers.hasOwnProperty(key)) return [key, parsers[key](val)];
+      if (Object.hasOwn(parsers, key)) return [key, parsers[key](val)];
       return [key, val];
     }
 
