@@ -1,5 +1,5 @@
 {
-  var parsers = {
+  const parsers = {
     'id': require('../lib/id'),
     'aggregate': require('../lib/aggregate'),
     'filter': require('../lib/filter'),
@@ -14,7 +14,7 @@
   }
 
   function mergeSelect(obj1, obj2) {
-    for (var i in obj2) {
+    for (let i in obj2) {
       // direct merge if obj2 is not selected in obj1
       if (!obj1[i]) {
         obj1[i] = obj2[i];
@@ -28,7 +28,7 @@
       }
 
       // merge properties
-      for (var key in obj2[i]) {
+      for (let key in obj2[i]) {
         if (key === 'select') {
           // merge subselects
           if (obj2[i].select) {
@@ -45,8 +45,8 @@
   }
 
   function getLeaves(select) {
-    var leaves = [];
-    for (var o in select) {
+    let leaves = [];
+    for (let o in select) {
       if (!select[o].select) {
         leaves.push(select[o]);
       } else {
@@ -60,8 +60,8 @@
 // Select
 select
   = head:attribute tail:(',' attribute)* {
-      var obj = head;
-      for (var i = 0; i < tail.length; i++) {
+      let obj = head;
+      for (let i = 0; i < tail.length; i++) {
         obj = mergeSelect(obj, tail[i][1]);
       }
       return obj;
@@ -74,8 +74,8 @@ attribute
 
 combined_attribute
   = head:single_attribute '.' tail:attribute {
-      var obj = head;
-      for (var o in obj) {
+      let obj = head;
+      for (let o in obj) {
         if (obj[o].select) {
           // single_attribute was "a[b,c]" => append to all leaves
           getLeaves(obj).forEach(function (sub) {
@@ -91,7 +91,7 @@ combined_attribute
 single_attribute
   = sub:sub_select
   / name:ident options:options sub:sub_select? {
-      var obj = {};
+      const obj = {};
       obj[name] = options;
       if (sub) obj[name].select = sub;
       return obj;
@@ -103,7 +103,7 @@ sub_select
       // Find all "leaves" of select (i.e. objects with no "select" property),
       // then append all sub nodes as new "select" property.
       getLeaves(select).forEach(function (obj) {
-        for (var i = 0; i < sub.length; i++) {
+        for (let i = 0; i < sub.length; i++) {
           obj.select = sub[i];
         }
       });
@@ -113,8 +113,8 @@ sub_select
 // Attribute options
 options
   = options:option* {
-      var obj = {};
-      for (var i = 0; i < options.length; i++) {
+      const obj = {};
+      for (let i = 0; i < options.length; i++) {
         if (Object.hasOwn(obj, options[i][0])) {
             throw new Error('Cannot redefine option "' + options[i][0] + '"');
         }
