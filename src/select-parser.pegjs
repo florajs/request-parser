@@ -79,7 +79,7 @@ combined_attribute
       for (const o of Object.keys(obj)) {
         if (obj[o].select) {
           // single_attribute was "a[b,c]" => append to all leaves
-          getLeaves(obj).forEach(function (sub) {
+          getLeaves(obj).forEach((sub) => {
             sub.select = tail;
           });
         } else {
@@ -103,7 +103,7 @@ sub_select
       // "a[b,c][d,e]" => append "[d,e]" to each b and c:
       // Find all "leaves" of select (i.e. objects with no "select" property),
       // then append all sub nodes as new "select" property.
-      getLeaves(select).forEach(function (obj) {
+      getLeaves(select).forEach((obj) => {
         for (let i = 0; i < sub.length; i++) {
           obj.select = sub[i];
         }
