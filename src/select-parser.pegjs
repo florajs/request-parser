@@ -22,7 +22,7 @@
         Object.keys(obj1[i]).some((key) => key !== 'select')
         && Object.keys(obj2[i]).some((key) => key !== 'select')
       ) {
-        throw new Error('Cannot merge options of "' + i + '"');
+        throw new Error(`Cannot merge options of "${i}"`);
       }
 
       // merge properties
@@ -115,7 +115,7 @@ options
       const obj = {};
       for (let i = 0, len = options.length; i < len; i++) {
         if (Object.hasOwn(obj, options[i][0])) {
-            throw new Error('Cannot redefine option "' + options[i][0] + '"');
+            throw new Error(`Cannot redefine option "${options[i][0]}"`);
         }
         obj[options[i][0]] = options[i][1];
       }
