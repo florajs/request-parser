@@ -16,12 +16,22 @@ describe('id parser', () => {
         assert.equal(idParser('foo'), 'foo');
     });
 
-    it('should only accept string or number', () => {
-        assert.doesNotThrow(() => idParser(1));
-        assert.doesNotThrow(() => idParser(3.1415));
-        assert.doesNotThrow(() => idParser('foo'));
-        assert.throws(() => idParser([]));
-        assert.throws(() => idParser({}));
-        assert.throws(() => idParser());
+    it('should accept and return string or number input', () => {
+        assert.equal(idParser(1), '1');
+        assert.equal(idParser(3.1415), '3.1415');
+        assert.equal(idParser('foo'), 'foo');
     });
+
+    Object.entries({
+        array: [],
+        object: {},
+        undefined: undefined
+    }).forEach(([type, input]) =>
+        it(`should throw an error for non-string/non-number arguments (${type})`, () => {
+            assert.throws(() => idParser(input), {
+                name: 'RequestError',
+                message: 'id only allows string or number'
+            });
+        })
+    );
 });
