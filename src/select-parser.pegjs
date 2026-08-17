@@ -44,11 +44,11 @@
 
   function getLeaves(select) {
     const leaves = [];
-    for (const o of Object.keys(select)) {
+    for (const key of Object.keys(select)) {
       leaves.push(...(
-        select[o].select
-            ? getLeaves(select[o].select)
-            : [select[o]]
+        select[key].select
+            ? getLeaves(select[key].select)
+            : [select[key]]
         )
       );
     }
