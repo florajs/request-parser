@@ -13,8 +13,7 @@
   "files": [
     "build/select-parser.js",
     "index.js",
-    "lib/",
-    "src/"
+    "lib/"
   ],
   "author": {
     "name": "stock3 AG",
