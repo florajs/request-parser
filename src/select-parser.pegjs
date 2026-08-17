@@ -45,13 +45,14 @@
   }
 
   function getLeaves(select) {
-    let leaves = [];
+    const leaves = [];
     for (let o in select) {
-      if (!select[o].select) {
-        leaves.push(select[o]);
-      } else {
-        Array.prototype.push.apply(leaves, getLeaves(select[o].select));
-      }
+      leaves.push(...(
+        select[o].select
+            ? getLeaves(select[o].select)
+            : [select[o]]
+        )
+      );
     }
     return leaves;
   }
