@@ -14,7 +14,7 @@
   }
 
   function mergeSelect(obj1, obj2) {
-    for (let i in obj2) {
+    for (const i of Object.keys(obj2)) {
       // direct merge if obj2 is not selected in obj1
       if (!obj1[i]) {
         obj1[i] = obj2[i];
@@ -28,7 +28,7 @@
       }
 
       // merge properties
-      for (let key in obj2[i]) {
+      for (const key of Object.keys(obj2[i])) {
         if (key === 'select') {
           // merge subselects
           if (obj2[i].select) {
@@ -46,7 +46,7 @@
 
   function getLeaves(select) {
     const leaves = [];
-    for (let o in select) {
+    for (const o of Object.keys(select)) {
       leaves.push(...(
         select[o].select
             ? getLeaves(select[o].select)
@@ -76,7 +76,7 @@ attribute
 combined_attribute
   = head:single_attribute '.' tail:attribute {
       let obj = head;
-      for (let o in obj) {
+      for (const o of Object.keys(obj)) {
         if (obj[o].select) {
           // single_attribute was "a[b,c]" => append to all leaves
           getLeaves(obj).forEach(function (sub) {
