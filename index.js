@@ -1,15 +1,8 @@
-/* eslint global-require: 0 */
-
 'use strict';
 
+const parsers = require('./lib/parsers');
+
 module.exports = {
-    id: require('./lib/id'),
-    aggregate: require('./lib/aggregate'),
-    filter: require('./lib/filter'),
-    limit: require('./lib/limit'),
-    order: require('./lib/order'),
-    page: require('./lib/page'),
-    search: require('./lib/search'),
-    select: require('./lib/select'),
+    ...parsers,
     parse: require('./lib/parse')
 };
