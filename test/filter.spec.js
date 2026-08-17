@@ -30,7 +30,7 @@ describe('filter parser', () => {
 
     describe('filter by single attribute', () => {
         it('accepts single filter parameters', () => {
-            assert.doesNotThrow(() => filterParser('type.id=1'));
+            assert.deepEqual(filterParser('type.id=1'), [[{ attribute: ['type', 'id'], operator: 'equal', value: 1 }]]);
         });
 
         it('parses single attributes', () => {
@@ -44,7 +44,9 @@ describe('filter parser', () => {
 
     describe('multiple values', () => {
         it('accepts multiple values with ","', () => {
-            assert.doesNotThrow(() => filterParser('type.id=1,2,3'));
+            assert.deepEqual(filterParser('type.id=1,2,3'), [
+                [{ attribute: ['type', 'id'], operator: 'equal', value: [1, 2, 3] }]
+            ]);
         });
 
         it('parses into arrays', () => {
@@ -56,7 +58,12 @@ describe('filter parser', () => {
 
     describe('multiple attributes with "AND"', () => {
         it('accepts AND syntax', () => {
-            assert.doesNotThrow(() => filterParser('type.id=1 AND categories.id=2'));
+            assert.deepEqual(filterParser('type.id=1 AND categories.id=2'), [
+                [
+                    { attribute: ['type', 'id'], operator: 'equal', value: 1 },
+                    { attribute: ['categories', 'id'], operator: 'equal', value: 2 }
+                ]
+            ]);
         });
 
         it('parses into top-level array', () => {
@@ -71,7 +78,10 @@ describe('filter parser', () => {
 
     describe('multiple attributes with "OR"', () => {
         it('accepts OR syntax', () => {
-            assert.doesNotThrow(() => filterParser('type.id=1 OR categories.id=2'));
+            assert.deepEqual(filterParser('type.id=1 OR categories.id=2'), [
+                [{ attribute: ['type', 'id'], operator: 'equal', value: 1 }],
+                [{ attribute: ['categories', 'id'], operator: 'equal', value: 2 }]
+            ]);
         });
 
         it('parses into second-level array', () => {
