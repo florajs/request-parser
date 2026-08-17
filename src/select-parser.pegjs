@@ -9,10 +9,6 @@
     'search': require('../lib/search')
   };
 
-  function excludeSelect(key) {
-    return (key !== 'select');
-  }
-
   function mergeSelect(obj1, obj2) {
     for (const i of Object.keys(obj2)) {
       // direct merge if obj2 is not selected in obj1
@@ -22,8 +18,10 @@
       }
 
       // allow "a(b=c),a.d", but not "a(b=c),a(e=f)"
-      if (Object.keys(obj1[i]).filter(excludeSelect).length > 0 &&
-        Object.keys(obj2[i]).filter(excludeSelect).length > 0) {
+      if (
+        Object.keys(obj1[i]).some((key) => key !== 'select')
+        && Object.keys(obj2[i]).some((key) => key !== 'select')
+      ) {
         throw new Error('Cannot merge options of "' + i + '"');
       }
 
