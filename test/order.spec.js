@@ -32,11 +32,14 @@ describe('order-parser', () => {
     );
 
     it('accepts single order parameters', () => {
-        assert.doesNotThrow(() => orderParser('name:asc'));
+        assert.deepEqual(orderParser('name:asc'), [{ attribute: ['name'], direction: 'asc' }]);
     });
 
     it('accepts multiple order parameters', () => {
-        assert.doesNotThrow(() => orderParser('name:asc,type:desc'));
+        assert.deepEqual(orderParser('name:asc,type:desc'), [
+            { attribute: ['name'], direction: 'asc' },
+            { attribute: ['type'], direction: 'desc' }
+        ]);
     });
 
     Object.entries({
@@ -72,7 +75,7 @@ describe('order-parser', () => {
         );
 
         it('should have no attribute', () => {
-            assert.doesNotThrow(() => orderParser('name:random'));
+            assert.deepEqual(orderParser('name:random'), [{ attribute: ['name'], direction: 'random' }]);
         });
     });
 
