@@ -10,6 +10,9 @@ describe('aggregate parser', () => {
     });
 
     it('should throw an error (not implemented)', () => {
-        assert.throws(() => aggregateParser({}));
+        assert.throws(() => aggregateParser({}), {
+            name: 'RequestError',
+            message: 'aggregate is not implemented yet'
+        });
     });
 });

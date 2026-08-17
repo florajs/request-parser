@@ -25,16 +25,25 @@ describe('page-parser', () => {
         assert.equal(output, 1);
     });
 
-    it('should throw an error for non-number strings', () => {
-        assert.throws(() => pageParser('foo'));
-        assert.throws(() => pageParser({}));
-        assert.throws(() => pageParser([]));
-    });
+    Object.entries({
+        string: 'foo',
+        object: {},
+        array: []
+    }).forEach(([type, input]) =>
+        it(`should throw an error for non-number strings (type: ${type})`, () => {
+            assert.throws(() => pageParser(input), {
+                name: 'RequestError',
+                message: 'page must be a number'
+            });
+        })
+    );
 
-    it('should throw an error for numbers < 1', () => {
-        assert.throws(() => pageParser(0));
-        assert.throws(() => pageParser('0'));
-        assert.throws(() => pageParser(-1));
-        assert.throws(() => pageParser(-100));
-    });
+    [0, '0', -1, -100].forEach((page) =>
+        it(`should throw an error for numbers < 1 (page: ${page})`, () => {
+            assert.throws(() => pageParser(page), {
+                name: 'RequestError',
+                message: 'page must be greater than 0'
+            });
+        })
+    );
 });

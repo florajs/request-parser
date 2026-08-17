@@ -27,8 +27,15 @@ describe('search-parser', () => {
         assert.equal(searchParser(), undefined);
     });
 
-    it('should throw an error for non-strings', () => {
-        assert.throws(() => searchParser({}));
-        assert.throws(() => searchParser([]));
-    });
+    Object.entries({
+        object: {},
+        array: []
+    }).forEach(([type, input]) =>
+        it(`should throw an error for non-strings (type: ${type})`, () => {
+            assert.throws(() => searchParser(input), {
+                name: 'RequestError',
+                message: 'search must be a string'
+            });
+        })
+    );
 });

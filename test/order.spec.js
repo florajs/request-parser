@@ -9,16 +9,27 @@ describe('order-parser', () => {
         assert.equal(typeof orderParser, 'function');
     });
 
-    it('should throw an error for non-string arguments', () => {
-        assert.throws(() => orderParser(1));
-        assert.throws(() => orderParser({}));
-        assert.throws(() => orderParser([]));
-    });
+    Object.entries({
+        number: 1,
+        object: {},
+        array: []
+    }).forEach(([type, input]) =>
+        it(`should throw an error for non-string arguments (${type})`, () => {
+            assert.throws(() => orderParser(input), {
+                name: 'RequestError',
+                message: 'order must be a string'
+            });
+        })
+    );
 
-    it('does not accept empty strings', () => {
-        assert.throws(() => orderParser(''));
-        assert.throws(() => orderParser(','));
-    });
+    ['', ','].forEach((input) =>
+        it('does not accept empty strings', () => {
+            assert.throws(() => orderParser(input), {
+                name: 'RequestError',
+                message: 'order cannot be empty'
+            });
+        })
+    );
 
     it('accepts single order parameters', () => {
         assert.doesNotThrow(() => orderParser('name:asc'));
@@ -28,22 +39,37 @@ describe('order-parser', () => {
         assert.doesNotThrow(() => orderParser('name:asc,type:desc'));
     });
 
-    it('should throw an error for invalid order parameters', () => {
-        assert.throws(() => orderParser('foo'));
-        assert.throws(() => orderParser('name:asc,type'));
-        assert.throws(() => orderParser('name:asc:foo'));
-    });
+    Object.entries({
+        foo: 'Invalid order parameter (missing direction): foo',
+        'name:asc,type': 'Invalid order parameter (missing direction): type',
+        'name:asc:foo': 'Invalid order parameter: name:asc:foo'
+    }).forEach(([input, message]) =>
+        it(`should throw an error for invalid order parameters (input: "${input}")`, () => {
+            assert.throws(() => orderParser(input), {
+                name: 'RequestError',
+                message
+            });
+        })
+    );
 
-    it('should throw an error for invalid order directions', () => {
-        assert.throws(() => orderParser('name:as'));
-        assert.throws(() => orderParser('name:ASC'));
-    });
+    ['name:as', 'name:ASC'].forEach((input) =>
+        it(`should throw an error for invalid order directions (input: "${input}")`, () => {
+            assert.throws(() => orderParser(input), {
+                name: 'RequestError',
+                message: `Invalid order direction: ${input}`
+            });
+        })
+    );
 
     describe('"random" direction', () => {
-        it('should be the only order element', () => {
-            assert.throws(() => orderParser(':random'));
-            assert.throws(() => orderParser('name:asc,:random'));
-        });
+        [':random', 'name:asc,:random'].forEach((input) =>
+            it(`should be the only order element (input: "${input}")`, () => {
+                assert.throws(() => orderParser(input), {
+                    name: 'RequestError',
+                    message: 'No attribute set to order'
+                });
+            })
+        );
 
         it('should have no attribute', () => {
             assert.doesNotThrow(() => orderParser('name:random'));

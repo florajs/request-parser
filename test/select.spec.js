@@ -9,16 +9,30 @@ describe('select-parser', () => {
         assert.equal(typeof selectParser, 'function');
     });
 
-    it('should throw an error for non-string arguments', () => {
-        assert.throws(() => selectParser(1));
-        assert.throws(() => selectParser({}));
-        assert.throws(() => selectParser([]));
-    });
+    Object.entries({
+        number: 1,
+        object: {},
+        array: []
+    }).forEach(([type, value]) =>
+        it(`should throw an error for non-string arguments (type: ${type})`, () => {
+            assert.throws(() => selectParser(value), {
+                name: 'TypeError',
+                message: 'input.charCodeAt is not a function'
+            });
+        })
+    );
 
-    it('does not accept empty strings', () => {
-        assert.throws(() => selectParser(''));
-        assert.throws(() => selectParser(','));
-    });
+    Object.entries({
+        '': 'Expected "[" or [A-Za-z0-9_{}] but end of input found.',
+        ',': 'Expected "[" or [A-Za-z0-9_{}] but "," found.'
+    }).forEach(([input, message]) =>
+        it(`does not accept empty strings (input: "${input}"`, () => {
+            assert.throws(() => selectParser(input), {
+                name: 'SyntaxError',
+                message
+            });
+        })
+    );
 
     it('accepts single select parameters', () => {
         assert.doesNotThrow(() => selectParser('title'));
@@ -89,19 +103,31 @@ describe('select-parser', () => {
         });
 
         it('throws an error if trying to merge options: "a(b=c),a(e=f)"', () => {
-            assert.throws(() => selectParser('a(b=c),a(e=f)'));
+            assert.throws(() => selectParser('a(b=c),a(e=f)'), {
+                name: 'Error',
+                message: 'Cannot merge options of "a"'
+            });
         });
 
         it('throws an error if options are redefined', () => {
-            assert.throws(() => selectParser('a(b=c)(b=d)'));
+            assert.throws(() => selectParser('a(b=c)(b=d)'), {
+                name: 'Error',
+                message: 'Cannot redefine option "b"'
+            });
         });
 
         it('does not accept invalid operators', () => {
-            assert.throws(() => selectParser('foo(limit>3)'));
+            assert.throws(() => selectParser('foo(limit>3)'), {
+                name: 'SyntaxError',
+                message: 'Expected "=" but ">" found.'
+            });
         });
 
         it('does not accept invalid parameters', () => {
-            assert.throws(() => selectParser('foo(limit=foo)'));
+            assert.throws(() => selectParser('foo(limit=foo)'), {
+                name: 'RequestError',
+                message: 'limit must be an integer or "unlimited"'
+            });
         });
 
         it('parses multiple parameters', () => {
@@ -129,7 +155,10 @@ describe('select-parser', () => {
 
     describe('attributes with children (brackets)', () => {
         it('fails on empty children "a[]"', () => {
-            assert.throws(() => selectParser('a[]'));
+            assert.throws(() => selectParser('a[]'), {
+                name: 'SyntaxError',
+                message: 'Expected "[" or [A-Za-z0-9_{}] but "]" found.'
+            });
         });
 
         it('parses simple children "a[b]"', () => {
@@ -213,7 +242,10 @@ describe('select-parser', () => {
 
     describe('attributes with children (brackets) with parameters', () => {
         it('fails on empty children "a(limit=3)[]"', () => {
-            assert.throws(() => selectParser('a(limit=3)[]'));
+            assert.throws(() => selectParser('a(limit=3)[]'), {
+                name: 'SyntaxError',
+                message: 'Expected "[" or [A-Za-z0-9_{}] but "]" found.'
+            });
         });
 
         it('parses simple parameters on root level', () => {
@@ -250,10 +282,14 @@ describe('select-parser', () => {
             assert.deepEqual(selectParser('a.b'), { a: { select: { b: {} } } });
         });
 
-        it('fails on invalid identifier', () => {
-            assert.throws(() => selectParser('a.*'));
-            assert.throws(() => selectParser('a.&'));
-        });
+        ['*', '&'].forEach((character) =>
+            it(`fails on invalid identifier (character: "${character}")`, () => {
+                assert.throws(() => selectParser(`a.${character}`), {
+                    name: 'SyntaxError',
+                    message: `Expected "[" or [A-Za-z0-9_{}] but "${character}" found.`
+                });
+            })
+        );
 
         it('parses children with parameters', () => {
             assert.deepEqual(selectParser('a(limit=3).b'), { a: { limit: 3, select: { b: {} } } });
@@ -262,7 +298,10 @@ describe('select-parser', () => {
         });
 
         it('fails on duplicate dots', () => {
-            assert.throws(() => selectParser('a..b'));
+            assert.throws(() => selectParser('a..b'), {
+                name: 'SyntaxError',
+                message: 'Expected "[" or [A-Za-z0-9_{}] but "." found.'
+            });
         });
     });
 
@@ -398,7 +437,10 @@ describe('select-parser', () => {
         });
 
         it('disallows curly braces at non-root level even if enableBraces=true', () => {
-            assert.throws(() => selectParser('foo,bar,test.{baz}', { enableBraces: true }), { name: 'SyntaxError' });
+            assert.throws(() => selectParser('foo,bar,test.{baz}', { enableBraces: true }), {
+                name: 'SyntaxError',
+                message: 'Invalid attribute name: { } is not allowed'
+            });
         });
     });
 });

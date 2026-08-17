@@ -9,11 +9,18 @@ describe('request-parser', () => {
         assert.equal(typeof requestParser, 'function');
     });
 
-    it('throws an error if parameter is not an object', () => {
-        assert.throws(() => requestParser());
-        assert.throws(() => requestParser(42));
-        assert.throws(() => requestParser('foo'));
-    });
+    Object.entries({
+        undefined: undefined,
+        number: 42,
+        string: 'foo'
+    }).forEach(([type, input]) =>
+        it(`throws an error if parameter is not an object (type: ${type})`, () => {
+            assert.throws(() => requestParser(input), {
+                name: 'RequestError',
+                message: 'Cannot parse request: must be an object'
+            });
+        })
+    );
 
     it('accepts and keeps unknown properties', () => {
         const request = { foo: 'bar' };
@@ -31,7 +38,10 @@ describe('request-parser', () => {
 
     describe('aggregate', () => {
         it('is not implemented', () => {
-            assert.throws(() => requestParser({ aggregate: {} }));
+            assert.throws(() => requestParser({ aggregate: {} }), {
+                name: 'RequestError',
+                message: 'Cannot parse aggregate: aggregate is not implemented yet'
+            });
         });
     });
 
@@ -43,7 +53,10 @@ describe('request-parser', () => {
         });
 
         it('throws an error if "limit" is invalid', () => {
-            assert.throws(() => requestParser({ limit: 'foo' }));
+            assert.throws(() => requestParser({ limit: 'foo' }), {
+                name: 'RequestError',
+                message: 'Cannot parse limit: limit must be an integer or "unlimited"'
+            });
         });
     });
 
@@ -55,7 +68,10 @@ describe('request-parser', () => {
         });
 
         it('throws an error if "page" is invalid', () => {
-            assert.throws(() => requestParser({ page: 'foo' }));
+            assert.throws(() => requestParser({ page: 'foo' }), {
+                name: 'RequestError',
+                message: 'Cannot parse page: page must be a number'
+            });
         });
     });
 
@@ -67,7 +83,10 @@ describe('request-parser', () => {
         });
 
         it('throws an error if "order" is invalid', () => {
-            assert.throws(() => requestParser({ order: 42 }));
+            assert.throws(() => requestParser({ order: 42 }), {
+                name: 'RequestError',
+                message: 'Cannot parse order: order must be a string'
+            });
         });
     });
 
@@ -86,11 +105,18 @@ describe('request-parser', () => {
             assert.equal(typeof request, 'object');
         });
 
-        it('throws an error if "select" is invalid', () => {
-            assert.throws(() => requestParser({ select: 42 }));
-            assert.throws(() => requestParser({ select: '' }));
-            assert.throws(() => requestParser({ select: { foo: 'bar' } }));
-        });
+        new Map([
+            [{ select: 42 }, 'Cannot parse select: input.charCodeAt is not a function'],
+            [{ select: '' }, 'Cannot parse select: Expected "[" or [A-Za-z0-9_{}] but end of input found.'],
+            [{ select: { foo: 'bar' } }, 'Cannot parse select: input.charCodeAt is not a function']
+        ]).forEach((message, input) =>
+            it(`throws an error if "select" is invalid (input: ${JSON.stringify(input)})`, () => {
+                assert.throws(() => requestParser(input), {
+                    name: 'RequestError',
+                    message
+                });
+            })
+        );
     });
 
     describe('filter', () => {
@@ -100,10 +126,17 @@ describe('request-parser', () => {
             assert.equal(typeof request, 'object');
         });
 
-        it('throws an error if "filter" is invalid', () => {
-            assert.throws(() => requestParser({ filter: 42 }));
-            assert.throws(() => requestParser({ filter: '' }));
-            assert.throws(() => requestParser({ filter: { foo: 'bar' } }));
-        });
+        [
+            [42, 'Cannot parse filter: filter must be a string'],
+            ['', 'Cannot parse filter: Invalid query string'],
+            [{ foo: 'bar' }, 'Cannot parse filter: filter must be a string']
+        ].forEach(([value, message]) =>
+            it(`throws an error if "filter" is invalid (value: ${JSON.stringify(value)})`, () => {
+                assert.throws(() => requestParser({ filter: value }), {
+                    name: 'RequestError',
+                    message
+                });
+            })
+        );
     });
 });

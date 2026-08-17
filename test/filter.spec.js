@@ -9,14 +9,23 @@ describe('filter parser', () => {
         assert.equal(typeof filterParser, 'function');
     });
 
-    it('should throw an error for non-string arguments', () => {
-        assert.throws(() => filterParser(1));
-        assert.throws(() => filterParser({}));
-        assert.throws(() => filterParser([]));
-    });
+    Object.entries({
+        number: 1,
+        object: {},
+        array: []
+    }).forEach(([type, input]) =>
+        it(`should throw an error for non-string arguments (${type})`, () =>
+            assert.throws(() => filterParser(input), {
+                name: 'RequestError',
+                message: 'filter must be a string'
+            }))
+    );
 
     it('does not accept empty strings', () => {
-        assert.throws(() => filterParser(''));
+        assert.throws(() => filterParser(''), {
+            name: 'ArgumentError',
+            message: 'Invalid query string'
+        });
     });
 
     describe('filter by single attribute', () => {
@@ -110,19 +119,31 @@ describe('filter parser', () => {
 
     describe('invalid syntax', () => {
         it('fails on missing operators', () => {
-            assert.throws(() => filterParser('a=1 b=2'));
+            assert.throws(() => filterParser('a=1 b=2'), {
+                name: 'ArgumentError',
+                message: "Missing connective near 'b=2' (pos: 2)"
+            });
         });
 
         it('fails on additional garbage', () => {
-            assert.throws(() => filterParser('a=1 asdfasdfsdfa'));
+            assert.throws(() => filterParser('a=1 asdfasdfsdfa'), {
+                name: 'ArgumentError',
+                message: "Missing connective near 'asdf' (pos: 2)"
+            });
         });
 
         it('fails on invalid range', () => {
-            assert.throws(() => filterParser('a=1..2..3'));
+            assert.throws(() => filterParser('a=1..2..3'), {
+                name: 'ArgumentError',
+                message: "Invalid range in near '..3' (pos: 6)"
+            });
         });
 
         it('fails on invalid range operator', () => {
-            assert.throws(() => filterParser('a>1..2'));
+            assert.throws(() => filterParser('a>1..2'), {
+                name: 'RequestError',
+                message: 'invalid range operator'
+            });
         });
     });
 
@@ -226,13 +247,20 @@ describe('filter parser', () => {
             assert.equal(filterParser('foo=null')[0][0].value, null);
         });
 
-        it('null is case sensitive', () => {
-            assert.throws(() => filterParser('foo=Null'));
-            assert.throws(() => filterParser('foo=NULL'));
-        });
+        ['Null', 'NULL'].forEach((value) =>
+            it('null is case sensitive', () => {
+                assert.throws(() => filterParser(`foo=${value}`), {
+                    name: 'ArgumentError',
+                    message: `Invalid value type, missing string quotation marks for '${value}'?`
+                });
+            })
+        );
 
         it('undefined', () => {
-            assert.throws(() => filterParser('a=undefined'));
+            assert.throws(() => filterParser('a=undefined'), {
+                name: 'ArgumentError',
+                message: 'Invalid value type, cannot be undefined'
+            });
         });
     });
 
