@@ -60,7 +60,7 @@
 select
   = head:attribute tail:(',' attribute)* {
       let obj = head;
-      for (let i = 0; i < tail.length; i++) {
+      for (let i = 0, len = tail.length; i < len; i++) {
         obj = mergeSelect(obj, tail[i][1]);
       }
       return obj;
@@ -102,7 +102,7 @@ sub_select
       // Find all "leaves" of select (i.e. objects with no "select" property),
       // then append all sub nodes as new "select" property.
       getLeaves(select).forEach((obj) => {
-        for (let i = 0; i < sub.length; i++) {
+        for (let i = 0, len = sub.length; i < len; i++) {
           obj.select = sub[i];
         }
       });
@@ -113,7 +113,7 @@ sub_select
 options
   = options:option* {
       const obj = {};
-      for (let i = 0; i < options.length; i++) {
+      for (let i = 0, len = options.length; i < len; i++) {
         if (Object.hasOwn(obj, options[i][0])) {
             throw new Error('Cannot redefine option "' + options[i][0] + '"');
         }
