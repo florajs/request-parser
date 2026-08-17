@@ -16,12 +16,6 @@ describe('id parser', () => {
         assert.equal(idParser('foo'), 'foo');
     });
 
-    it('should accept and return string or number input', () => {
-        assert.equal(idParser(1), '1');
-        assert.equal(idParser(3.1415), '3.1415');
-        assert.equal(idParser('foo'), 'foo');
-    });
-
     Object.entries({
         array: [],
         object: {},
