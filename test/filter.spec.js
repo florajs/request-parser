@@ -226,37 +226,20 @@ describe('filter parser', () => {
     });
 
     describe('operators', () => {
-        it('equal', () => {
-            assert.equal(filterParser('equal=1')[0][0].operator, 'equal');
-        });
-
-        it('notEqual', () => {
-            assert.equal(filterParser('equal!=1')[0][0].operator, 'notEqual');
-        });
-
-        it('greater', () => {
-            assert.equal(filterParser('equal>1')[0][0].operator, 'greater');
-        });
-
-        it('greaterOrEqual', () => {
-            assert.equal(filterParser('equal>=1')[0][0].operator, 'greaterOrEqual');
-        });
-
-        it('less', () => {
-            assert.equal(filterParser('equal<1')[0][0].operator, 'less');
-        });
-
-        it('lessOrEqual', () => {
-            assert.equal(filterParser('equal<=1')[0][0].operator, 'lessOrEqual');
-        });
-
-        it('between', () => {
-            assert.equal(filterParser('foo=10..20')[0][0].operator, 'between');
-        });
-
-        it('notBetween', () => {
-            assert.equal(filterParser('foo!=10..20')[0][0].operator, 'notBetween');
-        });
+        Object.entries({
+            'equal=1': 'equal',
+            'equal!=1': 'notEqual',
+            'equal>1': 'greater',
+            'equal>=1': 'greaterOrEqual',
+            'equal<1': 'less',
+            'equal<=1': 'lessOrEqual',
+            'foo=10..20': 'between',
+            'foo!=10..20': 'notBetween'
+        }).forEach(([input, operator]) =>
+            it(operator, () => {
+                assert.equal(filterParser(input)[0][0].operator, operator);
+            })
+        );
     });
 
     describe('data types', () => {
@@ -316,11 +299,16 @@ describe('filter parser', () => {
     });
 
     describe('ranges', () => {
-        it('parses ranges (int)', () => {
-            assert.deepEqual(filterParser('foo=10..20'), [
-                [{ attribute: ['foo'], operator: 'between', value: [10, 20] }]
-            ]);
-        });
+        Object.entries({
+            '=': 'between',
+            '!=': 'notBetween'
+        }).forEach(([symbol, operator]) =>
+            it(`parses ranges (int, ${operator})`, () => {
+                assert.deepEqual(filterParser(`foo${symbol}10..20`), [
+                    [{ attribute: ['foo'], operator, value: [10, 20] }]
+                ]);
+            })
+        );
 
         it('parses ranges (string)', () => {
             assert.deepEqual(filterParser('foo="2018-01-01".."2019-01-01"'), [
