@@ -176,6 +176,15 @@ describe('filter parser', () => {
             });
         });
 
+        ['a=1,2..3', 'a=1..2,3'].forEach((input) =>
+            it(`fails on range combined with a value list ('${input}')`, () => {
+                assert.throws(() => filterParser(input), {
+                    name: 'ArgumentError',
+                    message: 'Failed to beautify: Expression not found'
+                });
+            })
+        );
+
         Object.entries({
             'a=1AND b=2': "Invalid value type, missing string quotation marks for '1AND'?",
             'a=1 ANDb=2': "Missing connective near 'ANDb' (pos: 2)",
