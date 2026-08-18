@@ -244,17 +244,14 @@ describe('filter parser', () => {
 
     describe('data types', () => {
         it('int', () => {
-            assert.equal(typeof filterParser('foo=0')[0][0].value, 'number');
-            assert.equal(typeof filterParser('foo=1')[0][0].value, 'number');
+            assert.equal(filterParser('foo=0')[0][0].value, 0);
+            assert.equal(filterParser('foo=1')[0][0].value, 1);
+            assert.equal(filterParser('foo=-5')[0][0].value, -5, 'parse negative numbers');
         });
 
         it('float', () => {
-            assert.equal(typeof filterParser('foo=0.0')[0][0].value, 'number');
-            assert.equal(typeof filterParser('foo=3.1415')[0][0].value, 'number');
-        });
-
-        it('negative number', () => {
-            assert.equal(filterParser('foo=-5')[0][0].value, -5);
+            assert.equal(filterParser('foo=0.0')[0][0].value, 0.0);
+            assert.equal(filterParser('foo=3.1415')[0][0].value, 3.1415);
         });
 
         it('boolean', () => {
@@ -263,9 +260,9 @@ describe('filter parser', () => {
         });
 
         it('string', () => {
-            assert.equal(typeof filterParser('foo="bar"')[0][0].value, 'string');
-            assert.equal(typeof filterParser('foo="bar\\"baz"')[0][0].value, 'string');
-            assert.equal(typeof filterParser('foo=""')[0][0].value, 'string');
+            assert.equal(filterParser('foo="bar"')[0][0].value, 'bar');
+            assert.equal(filterParser('foo="bar\\"baz"')[0][0].value, 'bar"baz');
+            assert.equal(filterParser('foo=""')[0][0].value, '');
         });
 
         it('null', () => {
