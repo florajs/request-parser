@@ -24,7 +24,10 @@
   ],
   "homepage": "https://github.com/florajs/request-parser",
   "license": "MIT",
-  "repository": "florajs/request-parser",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/florajs/request-parser.git"
+  },
   "contributors": [
     {
       "name": "Nico Kaiser",
