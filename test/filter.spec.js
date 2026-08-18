@@ -125,6 +125,27 @@ describe('filter parser', () => {
                 ]
             ]);
         });
+
+        it('resolves AND-precedence with branches on both sides', () => {
+            assert.deepEqual(filterParser('(type.id=1 OR countries.id=3) AND (categories.id=2 OR author.id=4)'), [
+                [
+                    { attribute: ['type', 'id'], operator: 'equal', value: 1 },
+                    { attribute: ['categories', 'id'], operator: 'equal', value: 2 }
+                ],
+                [
+                    { attribute: ['type', 'id'], operator: 'equal', value: 1 },
+                    { attribute: ['author', 'id'], operator: 'equal', value: 4 }
+                ],
+                [
+                    { attribute: ['countries', 'id'], operator: 'equal', value: 3 },
+                    { attribute: ['categories', 'id'], operator: 'equal', value: 2 }
+                ],
+                [
+                    { attribute: ['countries', 'id'], operator: 'equal', value: 3 },
+                    { attribute: ['author', 'id'], operator: 'equal', value: 4 }
+                ]
+            ]);
+        });
     });
 
     describe('invalid syntax', () => {
@@ -193,6 +214,13 @@ describe('filter parser', () => {
                     { attribute: ['instrument', 'currency', 'active'], operator: 'equal', value: true },
                     { attribute: ['instrument', 'currency', 'isPublic'], operator: 'equal', value: true }
                 ]
+            ]);
+        });
+
+        it('allows square brackets with OR condition (multiple branches)', () => {
+            assert.deepEqual(filterParser('author.group[isPremium=true OR active=false]'), [
+                [{ attribute: ['author', 'group', 'isPremium'], operator: 'equal', value: true }],
+                [{ attribute: ['author', 'group', 'active'], operator: 'equal', value: false }]
             ]);
         });
     });
