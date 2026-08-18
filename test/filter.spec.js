@@ -244,6 +244,56 @@ describe('filter parser', () => {
                 [{ attribute: ['author', 'group', 'active'], operator: 'equal', value: false }]
             ]);
         });
+
+        it('converts short syntax (3-fold AND)', () => {
+            assert.deepEqual(
+                filterParser('stock[hasExactValues AND hasEstimatedValues AND shareClass.isPrimaryShare]=true'),
+                [
+                    [
+                        { attribute: ['stock', 'hasExactValues'], operator: 'equal', value: true },
+                        { attribute: ['stock', 'hasEstimatedValues'], operator: 'equal', value: true },
+                        { attribute: ['stock', 'shareClass', 'isPrimaryShare'], operator: 'equal', value: true }
+                    ]
+                ]
+            );
+        });
+
+        it('converts short syntax (3-fold OR)', () => {
+            assert.deepEqual(
+                filterParser('stock[hasExactValues OR hasEstimatedValues OR shareClass.isPrimaryShare]=true'),
+                [
+                    [{ attribute: ['stock', 'hasExactValues'], operator: 'equal', value: true }],
+                    [{ attribute: ['stock', 'hasEstimatedValues'], operator: 'equal', value: true }],
+                    [{ attribute: ['stock', 'shareClass', 'isPrimaryShare'], operator: 'equal', value: true }]
+                ]
+            );
+        });
+
+        it('converts short syntax (mixed AND and OR precedence, AND before OR)', () => {
+            assert.deepEqual(
+                filterParser('stock[hasExactValues AND hasEstimatedValues OR shareClass.isPrimaryShare]=true'),
+                [
+                    [
+                        { attribute: ['stock', 'hasExactValues'], operator: 'equal', value: true },
+                        { attribute: ['stock', 'hasEstimatedValues'], operator: 'equal', value: true }
+                    ],
+                    [{ attribute: ['stock', 'shareClass', 'isPrimaryShare'], operator: 'equal', value: true }]
+                ]
+            );
+        });
+
+        it('converts short syntax (mixed AND and OR precedence, OR before AND)', () => {
+            assert.deepEqual(
+                filterParser('stock[hasExactValues OR hasEstimatedValues AND shareClass.isPrimaryShare]=true'),
+                [
+                    [{ attribute: ['stock', 'hasExactValues'], operator: 'equal', value: true }],
+                    [
+                        { attribute: ['stock', 'hasEstimatedValues'], operator: 'equal', value: true },
+                        { attribute: ['stock', 'shareClass', 'isPrimaryShare'], operator: 'equal', value: true }
+                    ]
+                ]
+            );
+        });
     });
 
     describe('operators', () => {
