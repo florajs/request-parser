@@ -36,7 +36,7 @@
   },
   "dependencies": {
     "@florajs/errors": "^4.0.0",
-    "@florajs/ql": "^6.0.1"
+    "@florajs/ql": "^6.1.1"
   },
   "devDependencies": {
     "eslint": "^9.25.1",
