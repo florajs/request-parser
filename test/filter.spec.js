@@ -176,6 +176,27 @@ describe('filter parser', () => {
                 message: 'invalid range operator'
             });
         });
+
+        Object.entries({
+            'a=1AND b=2': "Invalid value type, missing string quotation marks for '1AND'?",
+            'a=1 ANDb=2': "Missing connective near 'ANDb' (pos: 2)",
+            'a=1OR b=2': "Invalid value type, missing string quotation marks for '1OR'?",
+            'a=1 ORb=2': "Missing connective near 'ORb=' (pos: 2)"
+        }).forEach(([input, message]) =>
+            it(`fails on missing whitespace around connective ('${input}')`, () => {
+                assert.throws(() => filterParser(input), {
+                    name: 'ArgumentError',
+                    message
+                });
+            })
+        );
+
+        it('fails on unclosed quotation mark', () => {
+            assert.throws(() => filterParser('foo="bar'), {
+                name: 'ArgumentError',
+                message: "Missing closing quotation mark for string starting near 'oo=\"bar' (pos: 5)"
+            });
+        });
     });
 
     describe('attribute paths', () => {
