@@ -43,17 +43,16 @@ describe('filter parser', () => {
     });
 
     describe('multiple values', () => {
-        it('accepts multiple values with ","', () => {
-            assert.deepEqual(filterParser('type.id=1,2,3'), [
-                [{ attribute: ['type', 'id'], operator: 'equal', value: [1, 2, 3] }]
-            ]);
-        });
-
-        it('parses into arrays', () => {
-            assert.deepEqual(filterParser('type.id=1,2,3'), [
-                [{ attribute: ['type', 'id'], operator: 'equal', value: [1, 2, 3] }]
-            ]);
-        });
+        Object.entries({
+            '=': 'equal',
+            '!=': 'notEqual'
+        }).forEach(([symbol, operator]) =>
+            it(`accepts multiple values with "${operator}"`, () => {
+                assert.deepEqual(filterParser(`type.id${symbol}1,2,3`), [
+                    [{ attribute: ['type', 'id'], operator, value: [1, 2, 3] }]
+                ]);
+            })
+        );
     });
 
     describe('multiple attributes with "AND"', () => {
