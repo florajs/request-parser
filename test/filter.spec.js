@@ -270,6 +270,10 @@ describe('filter parser', () => {
             assert.equal(typeof filterParser('foo=3.1415')[0][0].value, 'number');
         });
 
+        it('negative number', () => {
+            assert.equal(filterParser('foo=-5')[0][0].value, -5);
+        });
+
         it('boolean', () => {
             assert.equal(filterParser('foo=true')[0][0].value, true);
             assert.equal(filterParser('foo=false')[0][0].value, false);
@@ -287,6 +291,15 @@ describe('filter parser', () => {
 
         ['Null', 'NULL'].forEach((value) =>
             it('null is case sensitive', () => {
+                assert.throws(() => filterParser(`foo=${value}`), {
+                    name: 'ArgumentError',
+                    message: `Invalid value type, missing string quotation marks for '${value}'?`
+                });
+            })
+        );
+
+        ['nullable', 'truex', 'bar'].forEach((value) =>
+            it(`rejects unquoted string values ('${value}')`, () => {
                 assert.throws(() => filterParser(`foo=${value}`), {
                     name: 'ArgumentError',
                     message: `Invalid value type, missing string quotation marks for '${value}'?`
