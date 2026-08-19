@@ -233,6 +233,13 @@ describe('filter parser', () => {
             ]);
         });
 
+        it('allows a dotted path suffix after a bracket', () => {
+            assert.deepEqual(filterParser('a.b[c OR d].e=1'), [
+                [{ attribute: ['a', 'b', 'c', 'e'], operator: 'equal', value: 1 }],
+                [{ attribute: ['a', 'b', 'd', 'e'], operator: 'equal', value: 1 }]
+            ]);
+        });
+
         it('converts short syntax (AND)', () => {
             assert.deepEqual(filterParser('author.group[isPremium AND active]=true'), [
                 [
