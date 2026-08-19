@@ -227,6 +227,12 @@ describe('filter parser', () => {
             ]);
         });
 
+        it('allows a dotted path prefix with 3+ segments', () => {
+            assert.deepEqual(filterParser('a.b.c[x=1]'), [
+                [{ attribute: ['a', 'b', 'c', 'x'], operator: 'equal', value: 1 }]
+            ]);
+        });
+
         it('converts short syntax (AND)', () => {
             assert.deepEqual(filterParser('author.group[isPremium AND active]=true'), [
                 [
