@@ -217,6 +217,12 @@ describe('filter parser', () => {
             ]);
         });
 
+        it('allows nested square brackets', () => {
+            assert.deepEqual(filterParser('a[b[c=1]]'), [
+                [{ attribute: ['a', 'b', 'c'], operator: 'equal', value: 1 }]
+            ]);
+        });
+
         it('converts short syntax (AND)', () => {
             assert.deepEqual(filterParser('author.group[isPremium AND active]=true'), [
                 [
