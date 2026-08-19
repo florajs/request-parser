@@ -28,7 +28,7 @@ parse({
 lastname:asc
 lastname:desc
 firstname:asc,lastname:desc
-:random
+lastname:random
 ```
 
 ### Select syntax
