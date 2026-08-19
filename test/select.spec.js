@@ -16,8 +16,8 @@ describe('select-parser', () => {
     }).forEach(([type, value]) =>
         it(`should throw an error for non-string arguments (type: ${type})`, () => {
             assert.throws(() => selectParser(value), {
-                name: 'TypeError',
-                message: 'input.charCodeAt is not a function'
+                name: 'RequestError',
+                message: 'select must be a string'
             });
         })
     );

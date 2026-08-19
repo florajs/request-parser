@@ -106,9 +106,9 @@ describe('request-parser', () => {
         });
 
         new Map([
-            [{ select: 42 }, 'Cannot parse select: input.charCodeAt is not a function'],
+            [{ select: 42 }, 'Cannot parse select: select must be a string'],
             [{ select: '' }, 'Cannot parse select: Expected "[" or [A-Za-z0-9_{}] but end of input found.'],
-            [{ select: { foo: 'bar' } }, 'Cannot parse select: input.charCodeAt is not a function']
+            [{ select: { foo: 'bar' } }, 'Cannot parse select: select must be a string']
         ]).forEach((message, input) =>
             it(`throws an error if "select" is invalid (input: ${JSON.stringify(input)})`, () => {
                 assert.throws(() => requestParser(input), {
