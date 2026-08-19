@@ -1,13 +1,5 @@
 {
-  const parsers = {
-    'id': require('../lib/id'),
-    'aggregate': require('../lib/aggregate'),
-    'filter': require('../lib/filter'),
-    'limit': require('../lib/limit'),
-    'order': require('../lib/order'),
-    'page': require('../lib/page'),
-    'search': require('../lib/search')
-  };
+  const parsers = require('../lib/parsers.js');
 
   function mergeSelect(obj1, obj2) {
     for (const i of Object.keys(obj2)) {
@@ -124,7 +116,9 @@ options
 
 option
   = '(' key:option_key '=' val:option_value ')' {
-      if (Object.hasOwn(parsers, key)) return [key, parsers[key](val)];
+      // "select" is not a valid option_key on its own, so it must stay a
+      // pass-through option even though lib/parsers.js has an entry for it.
+      if (key !== 'select' && Object.hasOwn(parsers, key)) return [key, parsers[key](val)];
       return [key, val];
     }
 

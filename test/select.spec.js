@@ -64,6 +64,10 @@ describe('select-parser', () => {
             assert.deepEqual(selectParser('foo(a=1)'), { foo: { a: '1' } });
         });
 
+        it('passes through "select" as an unknown parameter instead of parsing it', () => {
+            assert.deepEqual(selectParser('foo(select=a,b)'), { foo: { select: 'a,b' } });
+        });
+
         it('accepts array parameters in filter', () => {
             assert.deepEqual(selectParser('foo(filter=id=1,2)'), {
                 foo: {
