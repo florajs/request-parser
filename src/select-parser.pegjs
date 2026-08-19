@@ -2,30 +2,30 @@
   const parsers = require('../lib/parsers.js');
 
   function mergeSelect(obj1, obj2) {
-    for (const i of Object.keys(obj2)) {
+    for (const attr of Object.keys(obj2)) {
       // direct merge if obj2 is not selected in obj1
-      if (!obj1[i]) {
-        obj1[i] = obj2[i];
+      if (!obj1[attr]) {
+        obj1[attr] = obj2[attr];
         continue;
       }
 
       // allow "a(b=c),a.d", but not "a(b=c),a(e=f)"
       if (
-        Object.keys(obj1[i]).some((key) => key !== 'select')
-        && Object.keys(obj2[i]).some((key) => key !== 'select')
+        Object.keys(obj1[attr]).some((option) => option !== 'select')
+        && Object.keys(obj2[attr]).some((option) => option !== 'select')
       ) {
-        throw new Error(`Cannot merge options of "${i}"`);
+        throw new Error(`Cannot merge options of "${attr}"`);
       }
 
       // merge options
-      for (const key of Object.keys(obj2[i])) {
-        if (key !== 'select') obj1[i][key] = obj2[i][key];
+      for (const option of Object.keys(obj2[attr])) {
+        if (option !== 'select') obj1[attr][option] = obj2[attr][option];
       }
 
       // merge subselects
-      if (obj2[i].select) {
-        if (obj1[i].select) mergeSelect(obj1[i].select, obj2[i].select);
-        else obj1[i].select = obj2[i].select;
+      if (obj2[attr].select) {
+        if (obj1[attr].select) mergeSelect(obj1[attr].select, obj2[attr].select);
+        else obj1[attr].select = obj2[attr].select;
       }
     }
     return obj1;
