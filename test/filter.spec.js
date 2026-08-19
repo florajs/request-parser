@@ -145,6 +145,10 @@ describe('filter parser', () => {
                 ]
             ]);
         });
+
+        it('resolves doubly nested round brackets', () => {
+            assert.deepEqual(filterParser('((a=1))'), [[{ attribute: ['a'], operator: 'equal', value: 1 }]]);
+        });
     });
 
     describe('invalid syntax', () => {
