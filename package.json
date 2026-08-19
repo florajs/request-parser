@@ -7,7 +7,7 @@
     "build": "mkdir -p build && peggy -o ./build/select-parser.js ./src/select-parser.pegjs",
     "prepack": "npm run build",
     "pretest": "npm run lint && npm run build",
-    "test": "node --test",
+    "test": "node --test test/*.spec.js",
     "lint": "eslint ."
   },
   "files": [
