@@ -17,18 +17,15 @@
         throw new Error(`Cannot merge options of "${i}"`);
       }
 
-      // merge properties
+      // merge options
       for (const key of Object.keys(obj2[i])) {
-        if (key === 'select') {
-          // merge subselects
-          if (obj2[i].select) {
-            if (!obj1[i].select) obj1[i].select = obj2[i].select;
-            mergeSelect(obj1[i].select, obj2[i].select);
-          }
-        } else {
-          // add options
-          obj1[i][key] = obj2[i][key];
-        }
+        if (key !== 'select') obj1[i][key] = obj2[i][key];
+      }
+
+      // merge subselects
+      if (obj2[i].select) {
+        if (obj1[i].select) mergeSelect(obj1[i].select, obj2[i].select);
+        else obj1[i].select = obj2[i].select;
       }
     }
     return obj1;

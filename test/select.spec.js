@@ -106,6 +106,10 @@ describe('select-parser', () => {
             assert.deepEqual(selectParser('a(b=c)(d=e),a.b'), { a: { b: 'c', d: 'e', select: { b: {} } } });
         });
 
+        it('merges options on a nested child: "a,a[b(limit=5)]"', () => {
+            assert.deepEqual(selectParser('a,a[b(limit=5)]'), { a: { select: { b: { limit: 5 } } } });
+        });
+
         it('throws an error if trying to merge options: "a(b=c),a(e=f)"', () => {
             assert.throws(() => selectParser('a(b=c),a(e=f)'), {
                 name: 'Error',
