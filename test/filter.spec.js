@@ -209,6 +209,13 @@ describe('filter parser', () => {
                 message: "Missing closing quotation mark for string starting near 'oo=\"bar' (pos: 5)"
             });
         });
+
+        it("rejects a number directly followed by letters ('1abc')", () => {
+            assert.throws(() => filterParser('foo=1abc'), {
+                name: 'ArgumentError',
+                message: "Invalid value type, missing string quotation marks for '1abc'?"
+            });
+        });
     });
 
     describe('attribute paths', () => {
