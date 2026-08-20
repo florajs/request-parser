@@ -78,10 +78,8 @@ combined_attribute
 single_attribute
   = sub:sub_select
   / name:ident options:options sub:sub_select? {
-      const obj = {};
-      obj[name] = options;
-      if (sub) obj[name].select = sub;
-      return obj;
+      if (sub) options.select = sub;
+      return { [name]: options };
     }
 
 sub_select
