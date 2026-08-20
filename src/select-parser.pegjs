@@ -63,14 +63,14 @@ attribute
 combined_attribute
   = head:single_attribute '.' tail:attribute {
       let obj = head;
-      for (const o of Object.keys(obj)) {
-        if (obj[o].select) {
+      for (const attr of Object.keys(obj)) {
+        if (obj[attr].select) {
           // single_attribute was "a[b,c]" => append to all leaves
           getLeaves(obj).forEach((sub) => {
             sub.select = tail;
           });
         } else {
-          obj[o].select = tail;
+          obj[attr].select = tail;
         }
       }
       return obj;
